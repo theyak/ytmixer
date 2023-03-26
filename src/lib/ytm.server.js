@@ -1,4 +1,5 @@
 import YouTubeMusic from "youtube-music-ts-api";
+// import YouTubeMusic from "~/youtube-music-ts-api/src/exports";
 
 export async function getAuth(headers) {
 	const cookie = headers.get("x-ytm-cookie");

@@ -816,6 +816,11 @@
   dependencies:
     "function-bind" "^1.1.1"
 
+"https@^1.0.0":
+  "integrity" "sha512-4EC57ddXrkaF0x83Oj8sM6SLQHAWXw90Skqu2M4AEWENZ3F02dFJE/GARA8igO79tcgYqGrD7ae4f5L3um2lgg=="
+  "resolved" "https://registry.npmjs.org/https/-/https-1.0.0.tgz"
+  "version" "1.0.0"
+
 "ignore@^5.2.0":
   "integrity" "sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ=="
   "resolved" "https://registry.npmjs.org/ignore/-/ignore-5.2.4.tgz"
