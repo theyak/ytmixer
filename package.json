@@ -1,6 +1,7 @@
 {
 	"name": "ytmixer",
 	"version": "0.0.1",
+	"platform": "node",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
