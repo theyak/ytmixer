@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-cloudflare';
+import adapter from '@sveltejs/adapter-netlify';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -7,7 +7,6 @@ const config = {
 		adapter: adapter()
 	},
 	preprocess: vitePreprocess(),
-	platform: "node",
 };
 
 export default config;
