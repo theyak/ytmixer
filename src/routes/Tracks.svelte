@@ -1,0 +1,226 @@
+<style lang="postcss">
+	th,
+	td {
+		text-align: left;
+		margin-top: 8px;
+		line-height: 24px;
+		color: #eee;
+	}
+	td.duration,
+	th.duration {
+		text-align: right;
+	}
+	th {
+		margin-top: 0;
+		user-select: none;
+		cursor: pointer;
+	}
+	td {
+		cursor: pointer;
+	}
+	tr.playing td {
+		font-weight: bold;
+		background-color: rgba(255, 255, 255, .05);
+	}
+	:root {
+		--svooltip-bg: blue;
+	}
+</style>
+
+<script>
+	import SaveModal from './SaveModal.svelte';
+	import * as YTM from '$lib/ytm.js';
+	import { tooltip } from 'svooltip';
+	import 'svooltip/styles.css';
+
+	export let tracks = [];
+	export let currentTrack = {};
+	export let onSelect = (tracks, idx) => {};
+
+	let sortType = '';
+	let sortAscending = false;
+	let saveModal = false;
+
+	function trackSort(type) {
+		if (type === sortType) {
+			sortAscending = !sortAscending;
+		} else {
+			sortAscending = true;
+		}
+		sortType = type;
+
+		if (type === 'title') {
+			if (sortAscending) {
+				tracks.sort((a, b) => (a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1));
+			} else {
+				tracks.sort((a, b) => (a.title.toLowerCase() < b.title.toLowerCase() ? 1 : -1));
+			}
+		} else if (type === 'duration') {
+			if (sortAscending) {
+				tracks.sort((a, b) => (a.seconds.toLowerCase() > b.seconds.toLowerCase() ? 1 : -1));
+			} else {
+				tracks.sort((a, b) => (a.seconds.toLowerCase() < b.seconds.toLowerCase() ? 1 : -1));
+			}
+		} else if (type === 'artist') {
+			tracks.sort((a, b) => {
+				a = a.artists.length > 0 ? a.artists[0].name.toLowerCase() : '';
+				b = b.artists.length > 0 ? b.artists[0].name.toLowerCase() : '';
+				if (sortAscending) {
+					return a > b ? 1 : -1;
+				} else {
+					return a < b ? 1 : -1;
+				}
+			});
+		} else if (type === 'album') {
+			tracks.sort((a, b) => {
+				a = a.album ? a.album.name.toLowerCase() : '';
+				b = b.album ? b.album.name.toLowerCase() : '';
+				if (sortAscending) {
+					return a > b ? 1 : -1;
+				} else {
+					return a < b ? 1 : -1;
+				}
+			});
+		}
+
+		// Tell svelte to update
+		tracks = tracks;
+	}
+
+	function shuffle(arr) {
+		let newArr = arr.slice();
+		for (let i = newArr.length - 1; i > 0; i--) {
+			const rand = Math.floor(Math.random() * (i + 1));
+			[newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
+		}
+		return newArr;
+	}
+
+	function shuffleTracks() {
+		for (let i = 0; i < 5; i++) {
+			tracks = shuffle(tracks);
+		}
+	}
+
+	function save() {
+		if (tracks.length <= 0) {
+			return;
+		}
+
+		saveModal = true;
+	}
+
+	async function savePlaylist(name) {
+		saveModal = false;
+		if (name) {
+			const playlist = await YTM.createPlaylist(name);
+			const ids = tracks.map((track) => track.id);
+
+			// There is a maximum of 200 tracks that can be saved at a time,
+			// but we'll do, 100 for no particular reason.
+			const chunkSize = 100;
+			for (let i = 0; i < ids.length; i += chunkSize) {
+				const chunk = ids.slice(i, i + chunkSize);
+				await YTM.addTracksToPlaylist(playlist.id, chunk);
+			}
+		}
+	}
+
+	async function dislike(videoId) {
+		await YTM.rateTrack(videoId, "DISLIKE");
+	}
+
+	async function like(videoId) {
+		await YTM.rateTrack(videoId, "LIKE");
+	}
+
+	async function indifferent(videoId) {
+		await YTM.rateTrack(videoId, "INDIFFERENT");
+	}
+</script>
+
+<SaveModal open={saveModal} onCancel={() => saveModal = false} onSave={(playlistName) => savePlaylist(playlistName)} />
+
+<div class="h-full max-h-full flex-grow overflow-auto scroller p-2">
+	{#if tracks.length > 0}
+		<div class="flex flex-row mb-4 w-100 justify-start gap-4 ml-6">
+
+			<button
+				use:tooltip={{
+					content: "Shuffle Playlist",
+					placement: 'bottom',
+					delay: [100, 0],
+					offset: 15,
+				}}
+				on:click={shuffleTracks} id="shuffle-playlist">
+				<svg alt="Shuffle Playlist" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 244, 244, 1)"><path d="M17 17h-1.559l-9.7-10.673A1 1 0 0 0 5.001 6H2v2h2.559l4.09 4.5-4.09 4.501H2v2h3.001a1 1 0 0 0 .74-.327L10 13.987l4.259 4.686a1 1 0 0 0 .74.327H17v3l5-4-5-4v3z"></path><path d="M15.441 8H17v3l5-3.938L17 3v3h-2.001a1 1 0 0 0-.74.327l-3.368 3.707 1.48 1.346L15.441 8z"></path></svg>
+			</button>
+
+			<button
+				use:tooltip={{
+					content: "Save New Playlist",
+					placement: 'bottom',
+					delay: [100, 0],
+					offset: 15,
+				}}
+				on:click={save} id="save-playlist">
+				<svg alt="Save Playlist" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 244, 244, 1)"><path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path></svg>
+			</button>
+
+		</div>
+		<table class="w-full">
+			<thead>
+				<tr>
+					<th class="w-6"></th>
+					<th on:click={() => trackSort('title')}> Title </th>
+					<th on:click={() => trackSort('artist')}> Artist </th>
+					<th on:click={() => trackSort('album')}> Album </th>
+					<th></th>
+					<th class="duration" on:click={() => trackSort('duration')}> Duration </th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each tracks as track, idx}
+					<tr on:click={() => onSelect(tracks, idx)} class:playing={currentTrack.id === track.id}>
+						<td class="w-6">
+							{#if currentTrack.id === track.id}
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 244, 244, 1);"><path d="M10.296 7.71 14.621 12l-4.325 4.29 1.408 1.42L17.461 12l-5.757-5.71z"></path><path d="M6.704 6.29 5.296 7.71 9.621 12l-4.325 4.29 1.408 1.42L12.461 12z"></path></svg>
+							{/if}
+						</td>
+						<td class="align-text-top">
+							{track.title}
+						</td>
+						{#if track.artists.length > 0}
+							<td class="align-text-top">{track.artists[0].name}</td>
+						{:else}
+							<td />
+						{/if}
+						{#if track.album}
+							<td class="align-text-top">{track.album.name}</td>
+						{:else}
+							<td />
+						{/if}
+
+						{#if track.likeStatus === "LIKE"}
+							<td>
+								<svg class="w-6 h-6 fill-gray-100 stroke-gray-100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z" />
+								</svg>
+							</td>
+						{:else if track.likeStatus === "DISLIKE"}
+							<td>
+								<svg class="w-6 h-6 fill-gray-100 stroke-gray-100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M7.5 15h2.25m8.024-9.75c.011.05.028.1.052.148.591 1.2.924 2.55.924 3.977a8.96 8.96 0 01-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398C20.613 14.547 19.833 15 19 15h-1.053c-.472 0-.745-.556-.5-.96a8.95 8.95 0 00.303-.54m.023-8.25H16.48a4.5 4.5 0 01-1.423-.23l-3.114-1.04a4.5 4.5 0 00-1.423-.23H6.504c-.618 0-1.217.247-1.605.729A11.95 11.95 0 002.25 12c0 .434.023.863.068 1.285C2.427 14.306 3.346 15 4.372 15h3.126c.618 0 .991.724.725 1.282A7.471 7.471 0 007.5 19.5a2.25 2.25 0 002.25 2.25.75.75 0 00.75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 002.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384" />
+								</svg>
+							</td>
+						{:else}
+							<td></td>
+						{/if}
+
+						<td class="duration">{track.duration}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	{/if}
+</div>

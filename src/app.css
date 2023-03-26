@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Example of CSS Variable */
+:root {
+	--almost-red: #f52244;
+}
+
+/* Example of using a TailwindCSS theme */
+html {
+	background-color: theme(colors.gray.900);
+	color: theme(colors.gray.100);
+	font-family: Roboto, sans-serif;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+body {
+	height: 100vh;
+	max-height: 100vh;
+	overflow: hidden;
+	font-size: 14px;
+}
+
+.scroller::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+		background-color: transparent;
+}
+
+.scroller:hover::-webkit-scrollbar-thumb {
+	background-color: theme(colors.gray.200);
+	border-radius: 10px;
+}
