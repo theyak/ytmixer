@@ -1,5 +1,5 @@
 // import YouTubeMusic from 'youtube-music-ts-api';
-import { YtmClient } from "$lib/ytmclient/index";
+import { YtmClient } from "ytmclient";
 
 // import YouTubeMusic from "/Users/larbear/p/ytmusic/index";
 export async function getAuth(headers) {
