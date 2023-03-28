@@ -1,6 +1,5 @@
 import { createHash } from "crypto";
 import axios from "axios";
-import * as utf8 from "utf8";
 
 export const YTM_DOMAIN = "https://music.youtube.com";
 export const YTM_BASE_API = "https://music.youtube.com/youtubei/v1/";
@@ -23,7 +22,7 @@ export function getContext(): any {
 export function getAuthorization(sapisid: string, origin: string = "https://music.youtube.com"): string {
 	const sha_1 = createHash('sha1');
 	const timestamp = Math.floor(Date.now() / 1000).toString();
-	sha_1.update(utf8.encode(`${timestamp} ${sapisid} ${origin}`));
+	sha_1.update(`${timestamp} ${sapisid} ${origin}`);
 	const authorization = `SAPISIDHASH ${timestamp}_${sha_1.digest("hex")}`;
 	return authorization;
 }
@@ -123,8 +122,6 @@ export class YtmClient {
 					title: item?.musicTwoRowItemRenderer?.title?.runs[0]?.text,
 					thumbnails: item?.musicTwoRowItemRenderer?.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails,
 					count,
-					id: item?.musicTwoRowItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId,
-					name: item?.musicTwoRowItemRenderer?.title?.runs[0]?.text,
 				};
 			});
 		}
@@ -138,8 +135,6 @@ type IPlaylist = {
 	title: string,
 	thumbnails?: IThumbnails[],
 	count?: number,
-	id?: string,
-	name?: string,
 };
 
 type IThumbnails = {
