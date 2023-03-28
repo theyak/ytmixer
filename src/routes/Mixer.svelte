@@ -70,5 +70,5 @@
 </div>
 
 <svelte:head>
-	<script src="https://www.youtube.com/iframe_api"></script>
+	<script src="https://www.youtube.com/iframe_api" defer></script>
 </svelte:head>

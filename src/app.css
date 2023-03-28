@@ -11,7 +11,6 @@
 html {
 	background-color: theme(colors.gray.900);
 	color: theme(colors.gray.100);
-	font-family: Roboto, sans-serif;
 	font-size: 16px;
 	line-height: 24px;
 }
@@ -21,6 +20,11 @@ body {
 	max-height: 100vh;
 	overflow: hidden;
 	font-size: 14px;
+	font-family: sans-serif;
+}
+
+body.fontLoaded {
+	font-family: Roboto, sans-serif;
 }
 
 .scroller::-webkit-scrollbar {
