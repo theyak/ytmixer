@@ -2,6 +2,7 @@ import {getAuth} from "$lib/ytm.server";
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({request}) {
+
 	try {
 		const ytma = await getAuth(request.headers);
 		const playlists = await ytma.getLibraryPlaylists();

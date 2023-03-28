@@ -7,6 +7,6 @@
 	<div class="text-xl">Playlists</div>
 
 	{#each lists as list}
-		<button class="block h-6 mt-2" on:click={() => onSelect(list.id)}>{list.name}</button>
+		<button class="block h-6 mt-2" on:click={() => onSelect(list.playlistId)}>{list.title}</button>
 	{/each}
 </div>
