@@ -4,9 +4,9 @@ import {getAuth} from "$lib/ytm.server";
 export async function GET({request, params}) {
 	const ytma = await getAuth(request.headers);
 
-	const tracks = await ytma.getPlaylist(params.playlistId);
+	const playlist = await ytma.getPlaylist(params.playlistId);
 
-	return new Response(JSON.stringify({tracks}));
+	return new Response(JSON.stringify(playlist));
 }
 
 /** @type {import('./$types').RequestHandler} */

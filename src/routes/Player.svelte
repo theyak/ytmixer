@@ -47,7 +47,7 @@
 		if (!player) {
 			player = new YT.Player('player', {
 				width: '288',
-				videoId: queue[index].id,
+				videoId: queue[index].videoId,
 				playerVars: {
 					playsinline: 1
 				},
@@ -57,7 +57,7 @@
 				}
 			});
 		} else {
-			player.loadVideoById(queue[index].id);
+			player.loadVideoById(queue[index].videoId);
 		}
 	}
 

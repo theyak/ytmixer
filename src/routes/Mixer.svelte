@@ -30,8 +30,8 @@
 	}
 
 	onMount(async () => {
-		// await loadPlaylists();
-		await loadPlaylist("VLPLn9QfuuY7JgCTrn35qqnK2L7cvUv66mXZ");
+		await loadPlaylists();
+		// await loadPlaylist("PLSYOby5Tejpxoy9WEAmjFtlNeRKktROZo");
 	});
 
 	async function loadPlaylist(id) {
@@ -39,11 +39,9 @@
 
 		const playlist = await YTM.getTracks(id);
 
-		playlistName = playlist.name;
+		playlistName = playlist.title;
 		tracks = playlist.tracks;
 	}
-
-
 </script>
 
 <LoginModal open={loginModal} onLogin={() => loadPlaylists()} />

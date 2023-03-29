@@ -114,7 +114,7 @@
 		saveModal = false;
 		if (name) {
 			const playlist = await YTM.createPlaylist(name);
-			const ids = tracks.map((track) => track.id);
+			const ids = tracks.map((track) => track.videoId);
 
 			// There is a maximum of 200 tracks that can be saved at a time,
 			// but we'll do, 100 for no particular reason.
