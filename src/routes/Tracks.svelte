@@ -181,9 +181,9 @@
 			</thead>
 			<tbody>
 				{#each tracks as track, idx}
-					<tr on:click={() => onSelect(tracks, idx)} class:playing={currentTrack.id === track.id}>
+					<tr on:click={() => onSelect(tracks, idx)} class:playing={currentTrack.videoId === track.videoId}>
 						<td class="w-6">
-							{#if currentTrack.id === track.id}
+							{#if currentTrack.videoId === track.videoId}
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 244, 244, 1);"><path d="M10.296 7.71 14.621 12l-4.325 4.29 1.408 1.42L17.461 12l-5.757-5.71z"></path><path d="M6.704 6.29 5.296 7.71 9.621 12l-4.325 4.29 1.408 1.42L12.461 12z"></path></svg>
 							{/if}
 						</td>

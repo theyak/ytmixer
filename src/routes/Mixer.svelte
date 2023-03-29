@@ -30,7 +30,8 @@
 	}
 
 	onMount(async () => {
-		await loadPlaylists();
+		// await loadPlaylists();
+		await loadPlaylist("VLPLn9QfuuY7JgCTrn35qqnK2L7cvUv66mXZ");
 	});
 
 	async function loadPlaylist(id) {
@@ -40,14 +41,9 @@
 
 		playlistName = playlist.name;
 		tracks = playlist.tracks;
-
-		// Add seconds property to allow sort on time
-		tracks = tracks.map((track) => {
-			const split = track.duration.split(':');
-			const seconds = split[0] * 60 + split[1];
-			return { ...track, seconds };
-		});
 	}
+
+
 </script>
 
 <LoginModal open={loginModal} onLogin={() => loadPlaylists()} />
@@ -68,7 +64,3 @@
 		<Player queue={[...tracks]} index={playIndex} onPlay={(track) => currentTrack = track}/>
 	</footer>
 </div>
-
-<svelte:head>
-	<script src="https://www.youtube.com/iframe_api" defer></script>
-</svelte:head>

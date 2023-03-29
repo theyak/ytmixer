@@ -6,7 +6,7 @@ export async function GET({request, params}) {
 
 	const tracks = await ytma.getPlaylist(params.playlistId);
 
-	return new Response(JSON.stringify(tracks));
+	return new Response(JSON.stringify({tracks}));
 }
 
 /** @type {import('./$types').RequestHandler} */
