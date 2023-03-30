@@ -72,6 +72,7 @@ export async function getPlaylists() {
 	try {
 		const response = await fetch("/api/playlists", getOptions());
 		const data = await response.json();
+		console.log(data);
 		return data;
 	} catch (err) {
 		console.log(err);
@@ -89,12 +90,14 @@ export async function getPlaylists() {
 export async function getTracks(playlistId, limit = 100) {
 	const response = await fetch(`/api/tracks/${playlistId}?limit=${limit}`, getOptions());
 	const data = await response.json();
+	console.log(data);
 	return data;
 }
 
 export async function getTrackContinuations(playlistId, token) {
 	const response = await fetch(`/api/tracks/${playlistId}?token=${token}`, getOptions());
 	const data = await response.json();
+	console.log(data);
 	return data;
 }
 
