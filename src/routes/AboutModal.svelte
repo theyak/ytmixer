@@ -1,11 +1,13 @@
 <script>
 	import { Button, Modal, Input } from 'flowbite-svelte';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let open;
-	export let onClose = () => {};
 </script>
 
-<Modal title="About" bind:open={open} autoclose class="w-96" on:hide={onClose}>
+<Modal title="About" bind:open={open} autoclose class="w-96" on:hide={() => dispatch("close")}>
 	<p>
 		I wanted a project to try out SvelteKit and I also
 		wanted to be able to randomly shuffle and save a

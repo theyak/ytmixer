@@ -1,12 +1,21 @@
 import {getAuth} from "$lib/ytm.server";
+// import * as util from "util";
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({request, params}) {
 	const ytma = await getAuth(request.headers);
 
-	const playlist = await ytma.getPlaylist(params.playlistId);
+	const url = new URL(request.url);
+	const limit = url.searchParams.get("limit") || 0;
+	const continuation = url.searchParams.get("token") || null;
 
-	return new Response(JSON.stringify(playlist));
+	if (continuation) {
+		const playlist = await ytma.getPlaylistContinuations(params.playlistId, continuation);
+		return new Response(JSON.stringify(playlist));
+	} else {
+		const playlist = await ytma.getPlaylist(params.playlistId, limit);
+		return new Response(JSON.stringify(playlist));
+	}
 }
 
 /** @type {import('./$types').RequestHandler} */

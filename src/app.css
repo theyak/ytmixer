@@ -9,8 +9,6 @@
 
 /* Example of using a TailwindCSS theme */
 html {
-	background-color: theme(colors.gray.900);
-	color: theme(colors.gray.100);
 	font-size: 16px;
 	line-height: 24px;
 }
@@ -18,7 +16,6 @@ html {
 body {
 	height: 100vh;
 	max-height: 100vh;
-	overflow: hidden;
 	font-size: 14px;
 	font-family: sans-serif;
 }
@@ -28,9 +25,9 @@ body.fontLoaded {
 }
 
 .scroller::-webkit-scrollbar {
-		width: 10px;
-		height: 10px;
-		background-color: transparent;
+	width: 10px;
+	height: 10px;
+	background-color: transparent;
 }
 
 .scroller:hover::-webkit-scrollbar-thumb {

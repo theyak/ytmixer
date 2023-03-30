@@ -86,8 +86,14 @@ export async function getPlaylists() {
  *
  * @return {id: string, title: string, artists?: any[], album?: {id: string, title: string}}
  */
-export async function getTracks(playlistId) {
-	const response = await fetch(`/api/tracks/${playlistId}`, getOptions());
+export async function getTracks(playlistId, limit = 100) {
+	const response = await fetch(`/api/tracks/${playlistId}?limit=${limit}`, getOptions());
+	const data = await response.json();
+	return data;
+}
+
+export async function getTrackContinuations(playlistId, token) {
+	const response = await fetch(`/api/tracks/${playlistId}?token=${token}`, getOptions());
 	const data = await response.json();
 	return data;
 }

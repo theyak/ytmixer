@@ -6,9 +6,11 @@
 	import Player from "./Player.svelte";
 	import Tracks from "./Tracks.svelte";
 	import Playlists from "./Playlists.svelte";
+	import { Progressbar } from 'flowbite-svelte'
 
 	let loginModal = false;
 	let aboutModal = false;
+	let progress = 0;
 
 	let playlistId;
 	let playlistName;
@@ -37,23 +39,48 @@
 	async function loadPlaylist(id) {
 		playlistId = id;
 
-		const playlist = await YTM.getTracks(id);
+		const playlist = await YTM.getTracks(id, 100);
 
 		playlistName = playlist.title;
 		tracks = playlist.tracks;
+
+		let continuation = playlist.continuation;
+
+		if (continuation) {
+			const trackCount = playlist.trackCount;
+			const maxRequests = Math.ceil(trackCount / 100);
+
+			let requests = 1;
+			progress = requests / maxRequests * 100;
+
+			while (continuation && requests < maxRequests) {
+				const next = await YTM.getTrackContinuations(id, continuation);
+				requests++;
+				progress = requests / maxRequests * 100;
+				tracks = [...tracks, ...next.tracks];
+				continuation = next.continuation;
+			}
+			progress = 100;
+			setTimeout(() => progress = 0, 1000);
+		}
 	}
 </script>
 
 <LoginModal open={loginModal} onLogin={() => loadPlaylists()} />
-<AboutModal open={aboutModal} onClose={() => aboutModal = false} />
+<AboutModal open={aboutModal} on:close={() => aboutModal = false} />
 
 <div class="flex flex-col w-screen h-screen">
-	<header class="h-12 flex-shrink-0 pl-2" style="line-height: 3rem; background-color: rgba(255, 255, 255, 0.05">
+	<header class="h-12 flex-shrink-0 pl-2 bg-gray-300 dark:bg-gray-700" style="line-height: 3rem;">
 		<div class="flex flex-row justify-between">
 			<div>YouTube Music Mixer</div>
 			<button class="mr-12" on:click={() => aboutModal = true}>About</button>
 		</div>
 	</header>
+	{#if progress}
+	<div>
+		<Progressbar progress={progress} size="h-4" labelInside />
+	</div>
+	{/if}
 	<div class="flex flex-row flex-grow" style="max-height: calc(100vh - 112px)">
 		<Playlists lists={playlists} onSelect={(id) => loadPlaylist(id)}/>
 		<Tracks {tracks} {currentTrack} onSelect={(list, idx) => {tracks = list; playIndex = idx}} />
