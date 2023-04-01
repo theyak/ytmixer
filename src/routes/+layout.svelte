@@ -2,15 +2,11 @@
 <script>
 	import '../app.css';
 	import AboutModal from './AboutModal.svelte';
-	import LoginModal from './LoginModal.svelte';
-
-	import {login} from "$lib/stores";
 
 	let aboutModal = false;
 </script>
 
 <AboutModal open={aboutModal} on:close={() => aboutModal = false} />
-<LoginModal on:close={$login = false} />
 
 <div class="flex flex-col w-screen h-screen">
 	<header class="h-12 flex-shrink-0 pl-2 bg-gray-300 dark:bg-gray-700" style="line-height: 3rem;">

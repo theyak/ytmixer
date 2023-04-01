@@ -5,9 +5,8 @@
 	import Tracks from "./Tracks.svelte";
 	import Playlists from "./Playlists.svelte";
 	import { Progressbar } from 'flowbite-svelte'
-	import {login} from "$lib/stores";
 
-	let loginModal = false;
+
 	let progress = 0;
 
 	let playlistId;
