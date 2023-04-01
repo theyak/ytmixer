@@ -1,15 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import * as YTM from '$lib/ytm.js';
-	import LoginModal from './LoginModal.svelte';
-	import AboutModal from './AboutModal.svelte';
 	import Player from "./Player.svelte";
 	import Tracks from "./Tracks.svelte";
 	import Playlists from "./Playlists.svelte";
 	import { Progressbar } from 'flowbite-svelte'
+	import {login} from "$lib/stores";
 
 	let loginModal = false;
-	let aboutModal = false;
 	let progress = 0;
 
 	let playlistId;
@@ -66,16 +64,8 @@
 	}
 </script>
 
-<LoginModal open={loginModal} onLogin={() => loadPlaylists()} />
-<AboutModal open={aboutModal} on:close={() => aboutModal = false} />
 
-<div class="flex flex-col w-screen h-screen">
-	<header class="h-12 flex-shrink-0 pl-2 bg-gray-300 dark:bg-gray-700" style="line-height: 3rem;">
-		<div class="flex flex-row justify-between">
-			<div>YouTube Music Mixer</div>
-			<button class="mr-12" on:click={() => aboutModal = true}>About</button>
-		</div>
-	</header>
+
 	{#if progress}
 	<div>
 		<Progressbar progress={progress} size="h-4" labelInside />
@@ -88,4 +78,5 @@
 	<footer class="flex-shrink-0">
 		<Player queue={[...tracks]} index={playIndex} onPlay={(track) => currentTrack = track}/>
 	</footer>
-</div>
+
+	<!-- <LoginModal open={loginModal} onLogin={() => loadPlaylists()} /> -->

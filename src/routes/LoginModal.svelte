@@ -1,16 +1,17 @@
 <script>
+	import { createEventDispatcher } from 'svelte';
 	import { Button, Modal, Input, Textarea } from 'flowbite-svelte';
-
-	export let open;
-	export let onLogin = () => {};
+	import { login } from "$lib/stores";
 
 	let authUser;
 	let cookie;
 
-	async function login() {
+	const dispatch = createEventDispatcher();
+
+	async function onLogin() {
 		localStorage.setItem("x-ytm-cookie", cookie);
 		localStorage.setItem("x-ytm-user", authUser);
-		onLogin();
+		dispatch('login');
 	}
 
 </script>
@@ -18,18 +19,17 @@
 <style lang="postcss">
 	.tag {
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-		background-color: #ddd;
 		border-radius: 3px;
 		display: inline-block;
-		padding: 0 8px;
 		font-weight: 700;
+		color: theme(colors.green.500);
 	}
 	a {
 		color: theme(colors.blue.700);
 	}
 </style>
 
-<Modal title="Login" bind:open={open} autoclose>
+<Modal title="Login" bind:open={$login} autoclose on:hide={() => dispatch("close")}>
 	<p>
 		Sorry, this is super annoying, but it's the only way we could get this to work
 		without bumping into Google's usage limits.
@@ -66,7 +66,7 @@
 	</Input>
 
 	<svelte:fragment slot="footer">
-		<Button on:click={() => login()}>Login</Button>
+		<Button on:click={() => onLogin()}>Login</Button>
 		<Button color="alternative">Nevermind</Button>
 	</svelte:fragment>
 </Modal>

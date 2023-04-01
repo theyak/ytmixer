@@ -2,19 +2,28 @@ import {getAuth} from "$lib/ytm.server";
 // import * as util from "util";
 
 /** @type {import('./$types').RequestHandler} */
-export async function GET({request, params}) {
-	const ytma = await getAuth(request.headers);
+export async function GET({request, params, setHeaders}) {
+
+	setHeaders({
+		"cache-control": "max-age=120",
+	});
 
 	const url = new URL(request.url);
 	const limit = url.searchParams.get("limit") || 0;
 	const continuation = url.searchParams.get("token") || null;
 
-	if (continuation) {
-		const playlist = await ytma.getPlaylistContinuations(params.playlistId, continuation);
-		return new Response(JSON.stringify(playlist));
-	} else {
-		const playlist = await ytma.getPlaylist(params.playlistId, limit);
-		return new Response(JSON.stringify(playlist));
+	try {
+		const ytma = await getAuth(request.headers);
+
+		if (continuation) {
+			const playlist = await ytma.getPlaylistContinuations(params.playlistId, continuation);
+			return new Response(JSON.stringify(playlist));
+		} else {
+			const playlist = await ytma.getPlaylist(params.playlistId, limit);
+			return new Response(JSON.stringify(playlist));
+		}
+	} catch (err) {
+		return new Response(JSON.stringify({error: err.message}));
 	}
 }
 

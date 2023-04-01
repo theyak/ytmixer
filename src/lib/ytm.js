@@ -25,6 +25,29 @@ function postOptions(data) {
 }
 
 /**
+ * Check if cookie values from YouTube Music have been defined.
+ *
+ * @returns {Boolean}
+ */
+export function hasYoutubeMusicCookie() {
+	let cookie = localStorage.getItem("x-ytm-cookie");
+	if (!cookie) {
+		return false;
+	}
+
+	cookie = cookie.trim();
+	if (cookie.length <= 0 || cookie.indexOf("=") < 0) {
+		return false;
+	}
+
+	if (cookie.indexOf("__Secure-3PAPISID") < 0) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Create a YouTube playlist.
  *
  * @param {string} title
@@ -69,15 +92,10 @@ export async function addTracksToPlaylist(playlistId, videoIds) {
  * @return {id: string, title: string}
  */
 export async function getPlaylists() {
-	try {
-		const response = await fetch("/api/playlists", getOptions());
-		const data = await response.json();
-		console.log("getPlaylists", data);
-		return data;
-	} catch (err) {
-		console.log(err);
-		return [];
-	}
+	const response = await fetch("/api/playlists", getOptions());
+	const data = await response.json();
+	console.log("getPlaylists", data);
+	return data;
 }
 
 /**
@@ -88,10 +106,15 @@ export async function getPlaylists() {
  * @return {id: string, title: string, artists?: any[], album?: {id: string, title: string}}
  */
 export async function getTracks(playlistId, limit = 100) {
-	const response = await fetch(`/api/tracks/${playlistId}?limit=${limit}`, getOptions());
-	const data = await response.json();
-	console.log("getTracks", data);
-	return data;
+	try {
+		const response = await fetch(`/api/tracks/${playlistId}?limit=${limit}`, getOptions());
+		const data = await response.json();
+		console.log("getTracks", data);
+		return data;
+	} catch (err) {
+		console.log(err);
+		return [];
+	}
 }
 
 export async function getTrackContinuations(playlistId, token) {
