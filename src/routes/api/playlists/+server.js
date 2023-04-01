@@ -3,9 +3,9 @@ import {getAuth} from "$lib/ytm.server";
 /** @type {import('./$types').RequestHandler} */
 export async function GET({setHeaders, request}) {
 
-	setHeaders({
-		"cache-control": "max-age=120",
-	});
+	// setHeaders({
+	// 	"cache-control": "max-age=120",
+	// });
 
 	try {
 		const ytma = await getAuth(request.headers);

@@ -1,4 +1,4 @@
-import { YtmClient } from "ytmclient";
+import { YtmClient } from "$lib/ytmclient";
 
 export async function getAuth(headers) {
 	const cookie = headers.get("x-ytm-cookie");

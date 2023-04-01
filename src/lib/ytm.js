@@ -51,10 +51,12 @@ export function hasYoutubeMusicCookie() {
  * Create a YouTube playlist.
  *
  * @param {string} title
+ * @param {string} description
+ * @param {string[]} videoIds
  * @return {id: string, name: string}
  */
-export async function createPlaylist(title) {
-	const response = await fetch(`/api/playlists/create`, postOptions({title}));
+export async function createPlaylist(title, description = "", videoIds = []) {
+	const response = await fetch(`/api/playlists/create`, postOptions({title, description, videoIds}));
 	const data = await response.json();
 	return data;
 }
