@@ -3,7 +3,6 @@
 	td {
 		text-align: left;
 		margin-top: 8px;
-		line-height: 48px;
 	}
 	td.duration,
 	th.duration {
@@ -16,6 +15,9 @@
 	}
 	td {
 		cursor: pointer;
+		height: 48px;
+		min-height: 48px;
+		vertical-align: middle;
 	}
 	tr.playing td {
 		font-weight: bold;
@@ -148,29 +150,6 @@
 
 <div class="h-full max-h-full flex-grow overflow-auto scroller p-2">
 	{#if tracks.length > 0}
-		<div class="flex flex-row mb-4 w-100 justify-start gap-4 ml-6 hidden">
-			<button
-				use:tooltip={{
-					content: "Shuffle Playlist",
-					placement: 'bottom',
-					delay: [100, 0],
-					offset: 15,
-				}}
-				on:click={shuffleTracks} id="shuffle-playlist">
-				<svg alt="Shuffle Playlist" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-gray-900 dark:fill-gray-100"><path d="M17 17h-1.559l-9.7-10.673A1 1 0 0 0 5.001 6H2v2h2.559l4.09 4.5-4.09 4.501H2v2h3.001a1 1 0 0 0 .74-.327L10 13.987l4.259 4.686a1 1 0 0 0 .74.327H17v3l5-4-5-4v3z"></path><path d="M15.441 8H17v3l5-3.938L17 3v3h-2.001a1 1 0 0 0-.74.327l-3.368 3.707 1.48 1.346L15.441 8z"></path></svg>
-			</button>
-
-			<button
-				use:tooltip={{
-					content: "Save New Playlist",
-					placement: 'bottom',
-					delay: [100, 0],
-					offset: 15,
-				}}
-				on:click={save} id="save-playlist">
-				<svg alt="Save Playlist" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-gray-900 dark:fill-gray-100"><path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path></svg>
-			</button>
-		</div>
 		<table class="w-full">
 			<thead>
 				<tr>

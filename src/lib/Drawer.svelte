@@ -1,7 +1,7 @@
 <script>
 	import { Drawer, CloseButton } from 'flowbite-svelte';
 	import { sineIn } from 'svelte/easing';
-	import { hideDrawer, playlists } from '$lib/stores';
+	import { hideDrawer, playlists, login } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import * as YTM from '$lib/ytm.js';
 
@@ -9,6 +9,9 @@
 		$playlists = await YTM.getPlaylists();
 		if ($playlists.error) {
 			$playlists = [];
+			$login = true;
+		} else {
+			$login = false;
 		}
 	});
 
@@ -26,7 +29,6 @@
 
 	{#each $playlists as list}
 		<div class="h-8 flex">
-
 			<a on:click={() => $hideDrawer = true} href={`/${list.playlistId}`}>{list.title}</a>
 		</div>
 	{/each}

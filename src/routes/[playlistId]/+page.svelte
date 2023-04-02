@@ -5,6 +5,7 @@
 	import * as YTM from '$lib/ytm.js';
 	import Tracks from '../Tracks.svelte';
 	import SaveModal from '../SaveModal.svelte';
+	import LoginModal from '../LoginModal.svelte';
 
 	let playlist = null;
 	let playlistmeta = null;
@@ -12,12 +13,14 @@
 	let saveModal = false;
 
 	// Detect change in URL and load playlist
-	$: if (!playlist || $page.params.playlistId !== playlist.id) {
+	$: if (localStorage && (!playlist || $page.params.playlistId !== playlist.id)) {
 		try {
 			if (YTM.hasYoutubeMusicCookie()) {
 				loadTracks($page.params.playlistId);
 			}
 		} catch (err) {
+			console.log(err);
+			console.log("error");
 			$login = true;
 		}
 	}
@@ -86,6 +89,7 @@
 	}
 </script>
 
+<LoginModal on:login={loadTracks($page.params.playlistId)} />
 <SaveModal open={saveModal} on:close={saveModal = false} on:save={createPlaylist}/>
 
 <div class="overflow-y-auto scroller">
@@ -94,7 +98,7 @@
 			<div class="flex justify-between">
 				<div class="flex flex-row gap-4 items-center">
 					{#if playlist.thumbnails}
-					<img src={playlist.thumbnails[0].url} alt="Playlist thumbnail" style={`width: ${playlist.thumbnails[0].width}px; height: ${playlist.thumbnails[0].height}px`} />
+						<img src={playlist.thumbnails[0].url} alt="Playlist thumbnail" style={`width: ${playlist.thumbnails[0].width}px; height: ${playlist.thumbnails[0].height}px`} />
 					{/if}
 					<div>
 						<div class="text-4xl mb-4">{playlist.title}</div>

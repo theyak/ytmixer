@@ -1,19 +1,30 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Modal, Input, Textarea } from 'flowbite-svelte';
-	import { login } from "$lib/stores";
+	import { login, playlists } from "$lib/stores";
+	import LoginRetryModal from "$lib/components/LoginRetryModal.svelte";
+	import * as YTM from '$lib/ytm.js';
 
 	let authUser;
 	let cookie;
+	let retry = false;
 
 	const dispatch = createEventDispatcher();
 
 	async function onLogin() {
 		localStorage.setItem("x-ytm-cookie", cookie);
 		localStorage.setItem("x-ytm-user", authUser);
-		dispatch('login');
-	}
+		const result = await YTM.getPlaylists();
 
+		if (Array.isArray(result)) {
+			$playlists = result;
+			$login = false;
+			dispatch('login');
+		} else {
+			$playlists = null;
+			retry = true;
+		}
+	}
 </script>
 
 <style lang="postcss">
@@ -29,7 +40,9 @@
 	}
 </style>
 
-<Modal title="Login" bind:open={$login} autoclose on:hide={() => dispatch("close")}>
+<LoginRetryModal open={retry} on:close={() => {retry = false; $login = true}}/>
+
+<Modal title="Login" autoclose bind:open={$login} on:hide={() => dispatch("close")}>
 	<p>
 		Sorry, this is super annoying, but it's the only way we could get this to work
 		without bumping into Google's usage limits.
@@ -67,6 +80,6 @@
 
 	<svelte:fragment slot="footer">
 		<Button on:click={() => onLogin()}>Login</Button>
-		<Button color="alternative">Nevermind</Button>
+		<Button color="alternative" on:click={() => $login = false}>Nevermind</Button>
 	</svelte:fragment>
 </Modal>
