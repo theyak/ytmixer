@@ -5,7 +5,7 @@ import {getAuth} from "$lib/ytm.server";
 export async function GET({request, params, setHeaders}) {
 
 	setHeaders({
-		"cache-control": "max-age=120",
+		"cache-control": "max-age=30",
 	});
 
 	const url = new URL(request.url);

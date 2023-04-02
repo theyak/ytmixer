@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { login, playlists } from '$lib/stores';
 	import * as YTM from '$lib/ytm.js';
-	import LoginModal from "./LoginModal.svelte";
+	import LoginModal from "$lib/components/LoginModal.svelte";
 
 	onMount(async () => {
 		if (!YTM.hasYoutubeMusicCookie()) {
@@ -15,9 +15,9 @@
 <LoginModal />
 
 <div class="overflow-y-auto scroller">
-	<div class="m-4">
+	<div style="margin: 16px auto">
 		{#if $playlists}
-			<div class="flex flex-row flex-wrap gap-8">
+			<div class="flex flex-row flex-wrap gap-8 justify-center">
 				{#each $playlists as list}
 				<a href={list.playlistId} style="max-width: 192px">
 					<div>

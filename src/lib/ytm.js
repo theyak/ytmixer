@@ -96,14 +96,14 @@ export async function addTracksToPlaylist(playlistId, videoIds) {
 export async function getPlaylists() {
 	const response = await fetch("/api/playlists", getOptions());
 	const data = await response.json();
-	console.log("getPlaylists", data);
 	return data;
 }
 
 /**
  * Get tracks from playlist
  *
- * @param {string} playlist
+ * @param {string} playlistId
+ * @param {number} limit
  *
  * @return {id: string, title: string, artists?: any[], album?: {id: string, title: string}}
  */
@@ -111,21 +111,33 @@ export async function getTracks(playlistId, limit = 100) {
 	try {
 		const response = await fetch(`/api/tracks/${playlistId}?limit=${limit}`, getOptions());
 		const data = await response.json();
-		console.log("getTracks", data);
 		return data;
 	} catch (err) {
-		console.log(err);
 		return [];
 	}
 }
 
+/**
+ * Playlists with more than 100 tracks need to be loaded in batches. This loads
+ * the next batch after the previous batch.
+ *
+ * @param {string} playlistId
+ * @param {string} token
+ * @returns {continuation: string}
+ */
 export async function getTrackContinuations(playlistId, token) {
 	const response = await fetch(`/api/tracks/${playlistId}?token=${token}`, getOptions());
 	const data = await response.json();
-	console.log("getTrackContinuations", data);
 	return data;
 }
 
+/**
+ * Rate a track
+ *
+ * @param {string} videoId
+ * @param {string} rating
+ * @returns
+ */
 export async function rateTrack(videoId, rating) {
 	const response = await fetch("/api/tracks/blah", postOptions({videoId, rating}));
 	const data = await response.json();

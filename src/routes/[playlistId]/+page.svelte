@@ -4,8 +4,8 @@
 	import { login, progress } from '$lib/stores';
 	import * as YTM from '$lib/ytm.js';
 	import Tracks from '../Tracks.svelte';
-	import SaveModal from '../SaveModal.svelte';
-	import LoginModal from '../LoginModal.svelte';
+	import SaveModal from '$lib/components/SaveModal.svelte';
+	import LoginModal from '$lib/components/LoginModal.svelte';
 
 	let playlist = null;
 	let playlistmeta = null;
@@ -13,13 +13,12 @@
 	let saveModal = false;
 
 	// Detect change in URL and load playlist
-	$: if (localStorage && (!playlist || $page.params.playlistId !== playlist.id)) {
+	$: if (!playlist || $page.params.playlistId !== playlist.id) {
 		try {
-			if (YTM.hasYoutubeMusicCookie()) {
+			if (localStorage && YTM.hasYoutubeMusicCookie()) {
 				loadTracks($page.params.playlistId);
 			}
 		} catch (err) {
-			console.log(err);
 			console.log("error");
 			$login = true;
 		}

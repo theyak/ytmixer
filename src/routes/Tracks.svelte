@@ -23,9 +23,6 @@
 		font-weight: bold;
 		background-color: rgba(0, 0, 0, .05);
 	}
-	:root {
-		--svooltip-bg: blue;
-	}
 
 	@media (prefers-color-scheme: dark) {
 		tr.playing td {
@@ -35,10 +32,8 @@
 </style>
 
 <script>
-	import SaveModal from './SaveModal.svelte';
+	import SaveModal from '../lib/components/SaveModal.svelte';
 	import * as YTM from '$lib/ytm.js';
-	import { tooltip } from 'svooltip';
-	import 'svooltip/styles.css';
 
 	export let tracks = [];
 	export let currentTrack = {};
