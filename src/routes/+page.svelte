@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { login, playlists } from '$lib/stores';
+	import { login, playlists, isLoggedIn } from '$lib/stores';
 	import * as YTM from '$lib/ytm.js';
 	import LoginModal from "$lib/components/LoginModal.svelte";
 
@@ -29,7 +29,7 @@
 				</a>
 				{/each}
 			</div>
-		{:else}
+		{:else if $isLoggedIn}
 			Loading playlists...
 		{/if}
 	</div>

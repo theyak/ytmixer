@@ -132,7 +132,7 @@ export async function getTrackContinuations(playlistId, token) {
 }
 
 /**
- * Rate a track
+ * Rate a track (Not implemented)
  *
  * @param {string} videoId
  * @param {string} rating
@@ -142,4 +142,18 @@ export async function rateTrack(videoId, rating) {
 	const response = await fetch("/api/tracks/blah", postOptions({videoId, rating}));
 	const data = await response.json();
 	return data;
+}
+
+/**
+ * Get YTM Client info. Basically because Netlify seems to be caching this
+ * event when trying to clear cach.
+ */
+export async function getYtmClientInfo() {
+	try{
+		const response = await fetch("/api/clientinfo", getOptions());
+		const data = await response.json();
+		return data;
+	} catch (err) {
+		return err;
+	}
 }

@@ -1,7 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Modal, Input, Textarea } from 'flowbite-svelte';
-	import { login, playlists } from "$lib/stores";
+	import { login, playlists, isLoggedIn } from "$lib/stores";
 	import LoginRetryModal from "$lib/components/LoginRetryModal.svelte";
 	import * as YTM from '$lib/ytm.js';
 
@@ -19,8 +19,12 @@
 		if (Array.isArray(result)) {
 			$playlists = result;
 			$login = false;
+			authUser = "";
+			cookie = "";
+			$isLoggedIn = true;
 			dispatch('login');
 		} else {
+			$isLoggedIn = false;
 			$playlists = null;
 			retry = true;
 		}

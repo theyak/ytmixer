@@ -1,9 +1,15 @@
 import { writable } from 'svelte/store';
 
 /**
- * Set to true to enable the login modal
+ * Set to true to enable the login modal.
+ * It seems like there would be a better way to do this.
  */
 export const login = writable(false);
+
+/**
+ * Flag indicating if user is successfully signed in to YouTube Music
+ */
+export const isLoggedIn = writable(false);
 
 /**
  * Progress bar for various things. Negative value to hide.
