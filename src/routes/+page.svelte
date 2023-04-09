@@ -7,6 +7,8 @@
 	onMount(async () => {
 		if (!YTM.hasYoutubeMusicCookie()) {
 			$login = true;
+			$isLoggedIn = false;
+			$playlsts = [];
 			return;
 		}
 	});
@@ -16,7 +18,7 @@
 
 <div class="overflow-y-auto scroller">
 	<div style="margin: 16px auto">
-		{#if $playlists}
+		{#if $playlists && $playlists.length > 0}
 			<div class="flex flex-row flex-wrap gap-8 justify-center">
 				{#each $playlists as list}
 				<a href={list.playlistId} style="max-width: 192px">
