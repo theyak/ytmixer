@@ -4,7 +4,8 @@
 
 /* Example of CSS Variable */
 :root {
-	--almost-red: #f52244;
+	--player-height: 96px;
+	--header-height: 48px;
 }
 
 /* Example of using a TailwindCSS theme */

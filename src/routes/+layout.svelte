@@ -4,15 +4,23 @@
 	import AboutModal from '$lib/components/AboutModal.svelte';
 	import Drawer from "$lib/Drawer.svelte";
 	import SvgIcon from "$lib/SvgIcon.svelte";
+	import Player from "$lib/components/Player.svelte";
 	import { hideDrawer } from "$lib/stores";
 
 	let aboutModal = false;
 </script>
 
+<style>
+	header {
+		height: var(--header-height);
+		line-height: var(--header-height);
+	}
+</style>
+
 <AboutModal open={aboutModal} on:close={() => aboutModal = false} />
 
 <div class="flex flex-col w-screen h-screen">
-	<header class="h-12 flex-shrink-0 pl-2 bg-gray-300 dark:bg-gray-700" style="line-height: 3rem;">
+	<header class="flex-shrink-0 pl-2 bg-gray-300 dark:bg-gray-700">
 		<div class="flex flex-row justify-between">
 			<button class="ml-1" on:click={() => $hideDrawer = !$hideDrawer}>
 				<SvgIcon>

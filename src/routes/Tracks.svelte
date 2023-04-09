@@ -32,16 +32,14 @@
 </style>
 
 <script>
-	import SaveModal from '../lib/components/SaveModal.svelte';
 	import * as YTM from '$lib/ytm.js';
+	import { queue } from "$lib/stores.js";
 
 	export let tracks = [];
 	export let currentTrack = {};
-	export let onSelect = (tracks, idx) => {};
 
 	let sortType = '';
 	let sortAscending = false;
-	let saveModal = false;
 
 	function trackSort(type) {
 		if (type === sortType) {
@@ -89,44 +87,32 @@
 		tracks = tracks;
 	}
 
-	function shuffle(arr) {
-		let newArr = arr.slice();
-		for (let i = newArr.length - 1; i > 0; i--) {
-			const rand = Math.floor(Math.random() * (i + 1));
-			[newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
-		}
-		return newArr;
-	}
+	export let onSelect = (videoId) => {
+		$queue = [];
 
-	function shuffleTracks() {
-		for (let i = 0; i < 5; i++) {
-			tracks = shuffle(tracks);
-		}
-	}
+		let found = false;
+		for (let track of tracks) {
+			if (track.videoId === videoId) {
+				found = true;
+			}
 
-	function save() {
-		if (tracks.length <= 0) {
-			return;
-		}
-
-		saveModal = true;
-	}
-
-	async function savePlaylist(name) {
-		saveModal = false;
-		if (name) {
-			const playlist = await YTM.createPlaylist(name);
-			const ids = tracks.map((track) => track.videoId);
-
-			// There is a maximum of 200 tracks that can be saved at a time,
-			// but we'll do, 100 for no particular reason.
-			const chunkSize = 100;
-			for (let i = 0; i < ids.length; i += chunkSize) {
-				const chunk = ids.slice(i, i + chunkSize);
-				await YTM.addTracksToPlaylist(playlist.id, chunk);
+			if (found) {
+				$queue.push(track);
 			}
 		}
-	}
+
+		found = false;
+		for (let track of tracks) {
+			if (track.vidoId === videoId) {
+				found = true;
+			}
+
+			if (!found) {
+				$queue.push(track);
+			}
+		}
+		console.log($queue);
+	};
 
 	async function dislike(videoId) {
 		await YTM.rateTrack(videoId, "DISLIKE");
@@ -140,8 +126,6 @@
 		await YTM.rateTrack(videoId, "INDIFFERENT");
 	}
 </script>
-
-<SaveModal open={saveModal} onCancel={() => saveModal = false} onSave={(playlistName) => savePlaylist(playlistName)} />
 
 <div class="h-full max-h-full flex-grow overflow-auto scroller p-2">
 	{#if tracks.length > 0}
@@ -159,7 +143,7 @@
 			</thead>
 			<tbody>
 				{#each tracks as track, idx}
-					<tr on:click={() => onSelect(tracks, idx)} class:playing={currentTrack.videoId === track.videoId}>
+					<tr on:click={() => onSelect(track.videoId)} class:playing={currentTrack.videoId === track.videoId}>
 						<td>
 							<img style="object-fit:cover;width:40px;height:40px" src={track.thumbnails[0].url} alt="" />
 						</td>

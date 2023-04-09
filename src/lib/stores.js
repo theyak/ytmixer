@@ -19,3 +19,8 @@ export const hideDrawer = writable(true);
  * Playlists. Generally loaded on page load or on login.
  */
 export const playlists = writable([]);
+
+/**
+ * Songs queued up for playing
+ */
+export const queue = writable([]);

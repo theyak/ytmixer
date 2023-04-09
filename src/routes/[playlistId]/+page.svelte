@@ -6,6 +6,7 @@
 	import Tracks from '../Tracks.svelte';
 	import SaveModal from '$lib/components/SaveModal.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
+	import Player from "$lib/components/Player.svelte";
 
 	let playlist = null;
 	let playlistmeta = null;
@@ -92,7 +93,7 @@
 <SaveModal open={saveModal} on:close={saveModal = false} on:save={createPlaylist}/>
 
 <div class="overflow-y-auto scroller">
-	<div class="m-4">
+	<div class="m-4 mb-24">
 		{#if playlist}
 			<div class="flex justify-between">
 				<div class="flex flex-row gap-4 items-center">
@@ -125,3 +126,5 @@
 		{/if}
 	</div>
 </div>
+
+<Player />
