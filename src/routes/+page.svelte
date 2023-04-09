@@ -8,7 +8,7 @@
 		if (!YTM.hasYoutubeMusicCookie()) {
 			$login = true;
 			$isLoggedIn = false;
-			$playlsts = [];
+			$playlists = [];
 			return;
 		}
 	});
