@@ -8,6 +8,8 @@ This is a little app I made for myself to help with a couple annoyances I have w
 
 This app helps with those issues.
 
+
+
 ## Installation
 
 You can try running this at https://ytmixer.netlify.app or install locally.
@@ -44,6 +46,12 @@ Google's allowed resource limit. So, we have to kind of do a work around.
 
 The following steps are for Google Chrome. Similar steps should likely work in
 other browsers.
+
+Please note that we don't store any authentication information. Your login credentials
+are stored in your browser's localStorage. However, if you use the application on
+Netlify (https://ytmixer.netlify.app), those credentials are sent to the backend to
+make requests to YouTube. I doubt Netlify is paying any attention to this traffic,
+but if you have concerns, you should run this from your local machine instead of on Netlify.
 
 1. Open https://localhost:5137 (or https://ytmixer.netlify.app).
 2. Open a new tab and open developer tools for the new tab.
