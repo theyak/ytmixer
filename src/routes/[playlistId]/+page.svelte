@@ -1,12 +1,12 @@
 <script>
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { login, progress } from '$lib/stores';
+	import { login, progress, isLoggedIn } from '$lib/stores';
 	import * as YTM from '$lib/ytm.js';
 	import Tracks from '../Tracks.svelte';
 	import SaveModal from '$lib/components/SaveModal.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
-	import Player from "$lib/components/Player.svelte";
+	// import Player from "$lib/components/Player.svelte";
 
 	let playlist = null;
 	let playlistmeta = null;
@@ -36,6 +36,15 @@
 		let requests = 1;
 
 		playlist = await YTM.getTracks(id, 100);
+
+		if (playlist.error) {
+			playlist = {
+				id: $page.params.playlistId,
+				tracks: [],
+			};
+			return;
+		}
+
 		let continuation = playlist.continuation;
 
 		const trackCount = playlist.trackCount;
@@ -95,36 +104,42 @@
 <div class="overflow-y-auto scroller">
 	<div class="m-4 mb-24">
 		{#if playlist}
-			<div class="flex justify-between">
-				<div class="flex flex-row gap-4 items-center">
-					{#if playlist.thumbnails}
-						<img src={playlist.thumbnails[0].url} alt="Playlist thumbnail" style={`width: ${playlist.thumbnails[0].width}px; height: ${playlist.thumbnails[0].height}px`} />
-					{/if}
+			{#if playlist.title}
+				<div class="flex justify-between">
+					<div class="flex flex-row gap-4 items-center">
+						{#if playlist.thumbnails}
+							<img src={playlist.thumbnails[0].url} alt="Playlist thumbnail" style={`width: ${playlist.thumbnails[0].width}px; height: ${playlist.thumbnails[0].height}px`} />
+						{/if}
+						<div>
+							<div class="text-4xl mb-4">{playlist.title}</div>
+							<div>{playlist.tracks.length} Songs</div>
+							<div>{playlist.description || ""}</div>
+							{#if playlist.duration}
+								<div>Duration: {playlist.duration}</div>
+							{/if}
+							{#if playlist.author?.name}
+								<div>Author: {playlist.author.name}</div>
+							{/if}
+							{#if playlist.year}
+								<div>Year: {playlist.year}</div>
+							{/if}
+						</div>
+					</div>
 					<div>
-						<div class="text-4xl mb-4">{playlist.title}</div>
-						<div>{playlist.tracks.length} Songs</div>
-						<div>{playlist.description || ""}</div>
-						{#if playlist.duration}
-							<div>Duration: {playlist.duration}</div>
-						{/if}
-						{#if playlist.author?.name}
-							<div>Author: {playlist.author.name}</div>
-						{/if}
-						{#if playlist.year}
-							<div>Year: {playlist.year}</div>
+						<button class="px-4 py-1 mr-3 border-solid dark:border-gray-100 border-gray-900 border" on:click={shuffleTracks}>Shuffle</button>
+						{#if $isLoggedIn}
+							<button class="px-4 py-1 border-solid dark:border-gray-100 border-gray-900 border" on:click={saveTracks}>Save</button>
 						{/if}
 					</div>
 				</div>
-				<div>
-					<button class="px-4 py-1 mr-3 border-solid dark:border-gray-100 border-gray-900 border" on:click={shuffleTracks}>Shuffle</button>
-					<button class="px-4 py-1 border-solid dark:border-gray-100 border-gray-900 border" on:click={saveTracks}>Save</button>
-				</div>
-			</div>
-			<Tracks tracks={playlist.tracks} />
-		{:else}
+				<Tracks tracks={playlist.tracks} />
+			{:else}
+				Playlist {playlist.id} has no tracks.
+			{/if}
+		{:else if $isLoggedIn}
 			Loading tracks...
 		{/if}
 	</div>
 </div>
 
-<Player />
+<!-- <Player /> -->

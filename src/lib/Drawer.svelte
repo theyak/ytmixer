@@ -11,7 +11,9 @@
 		if ($playlists.error) {
 			$playlists = [];
 			$login = true;
+			$isLoggedIn = false;
 		} else {
+			$isLoggedIn = true;
 			$login = false;
 		}
 	});

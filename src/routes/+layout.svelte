@@ -4,7 +4,6 @@
 	import AboutModal from '$lib/components/AboutModal.svelte';
 	import Drawer from "$lib/Drawer.svelte";
 	import SvgIcon from "$lib/SvgIcon.svelte";
-	import Player from "$lib/components/Player.svelte";
 	import { hideDrawer } from "$lib/stores";
 
 	let aboutModal = false;
