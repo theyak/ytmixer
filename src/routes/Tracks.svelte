@@ -103,7 +103,7 @@
 
 		found = false;
 		for (let track of tracks) {
-			if (track.vidoId === videoId) {
+			if (track.videoId === videoId) {
 				found = true;
 			}
 
@@ -111,7 +111,6 @@
 				$queue.push(track);
 			}
 		}
-		console.log($queue);
 	};
 
 	async function dislike(videoId) {
