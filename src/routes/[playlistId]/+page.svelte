@@ -37,6 +37,7 @@
 
 		playlist = await YTM.getTracks(id, 100);
 
+		console.log(playlist);
 		if (playlist.error) {
 			playlist = {
 				id: $page.params.playlistId,
