@@ -57,7 +57,7 @@
 
 	<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
 		Open  <a target="_blank" href="https://music.youtube.com" rel="noreferrer">https://music.youtube.com</a> in another tab.
-		If you are not already logged in to YouTube Music, log in.
+		If you are not already logged in to YouTube Music, log in with a Google account.
 	</p>
 
 	<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
