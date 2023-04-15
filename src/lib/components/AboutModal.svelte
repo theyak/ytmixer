@@ -9,9 +9,9 @@
 
 <Modal title="About" bind:open={open} autoclose class="w-96" on:hide={() => dispatch("close")}>
 	<p>
-		I wanted a project to try out SvelteKit and I also
-		wanted to be able to randomly shuffle and save a
-		playlist to YouTube Music, so, I made this!
+		I wanted a project to try out SvelteKit and Tailwind CSS, and I also
+		wanted to be able to randomly shuffle and save a playlist to YouTube Music,
+		so, I made this!
 	</p>
 	<p>
 		<strong>Usage:</strong> Click playlist, click shuffle button, click save button.

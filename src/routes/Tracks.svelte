@@ -35,6 +35,7 @@
 	import * as YTM from '$lib/ytm.js';
 	import { queue, currentTrack } from "$lib/stores.js";
 	import SvgIcon from "$lib/components/SvgIcon.svelte";
+	import Artists from "$lib/components/Artists.svelte";
 
 	export let tracks = [];
 
@@ -156,7 +157,9 @@
 							{track.title}
 						</td>
 						{#if track.artists.length > 0}
-							<td class="align-text-top">{track.artists[0].name}</td>
+							<td class="align-text-top">
+								<Artists artists={track.artists} />
+							</td>
 						{:else}
 							<td />
 						{/if}

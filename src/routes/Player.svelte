@@ -2,6 +2,7 @@
 	import { Progressbar } from "flowbite-svelte";
 	import { queue, currentTrack } from "$lib/stores.js";
 	import SvgIcon from "$lib/components/SvgIcon.svelte";
+	import Artists from "$lib/components/Artists.svelte";
 
 	export let index = 0;
 
@@ -174,20 +175,20 @@
 			</button>
 		</div>
 		{#if $queue[index]?.title}
-			<div id="track-info" class="text-center">
+			<div id="track-info">
 				<div class="flex flex-row items-center gap-2">
 					<img style="height:40px;width:40px" src={$queue[index].thumbnails[0].url} alt="Track Thumbnail" />
 					<div>
-						{$queue[index].title}
-						{#if $queue[index].artists && $queue[index].artists.length > 0}
-							&bull;
-							{$queue[index].artists[0].name}
-						{/if}
+						<div>
+							{$queue[index].title}
+						</div>
+						<div><Artists artists={$queue[index].artists} /></div>
 					</div>
 				</div>
 			</div>
 		{/if}
-		<div id="player-options" />
+
+		<div id="player-options" style="width: 144px" />
 	</div>
 </div>
 <div id="player" class="hidden" />
