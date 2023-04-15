@@ -2,6 +2,7 @@
 	import { Progressbar } from "flowbite-svelte";
 	import { queue, currentTrack } from "$lib/stores.js";
 	import SvgIcon from "$lib/SvgIcon.svelte";
+
 	export let index = 0;
 
 	let player = null;
@@ -10,8 +11,17 @@
 	let trackTime = '';
 	let trackLength = '';
 	let trackPosition = 0;
+	let videoId = null;
 
-
+	// Weird issue here. When calling playVideo(), the
+	// player variable gets all messed up. So, start video
+	// directly instead of calliing playVideo()
+	$: if (videoId !== $currentTrack.videoId) {
+		videoId = $currentTrack.videoId;
+		if (player) {
+			player.loadVideoById(videoId);
+		}
+	}
 
 	function formatTime(seconds) {
 		// Calculate hours, minutes, and seconds
@@ -41,7 +51,7 @@
 		return timeString;
 	}
 
-	function playVideo(d) {
+	function playVideo() {
 		isPlaying = true;
 
 		if (!$currentTrack) {
@@ -131,7 +141,7 @@
 </script>
 
 <div
-	class="fixed w-full bottom-0 h-17 min-h-17 border-t-gray-400 p-2 bg-slate-200 dark:bg-slate-800"
+	class="fixed w-full bottom-0 h-17 min-h-17 border-t-gray-400 px-2 py-1 bg-slate-200 dark:bg-slate-800"
 	style="border-top-width: 1px; border-top-style: solid"
 >
 	<div class="flex flex-row items-center">
