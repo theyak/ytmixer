@@ -1,5 +1,4 @@
 <script>
-	import { Progressbar } from "flowbite-svelte";
 	import { queue, currentTrack } from "$lib/stores.js";
 	import SvgIcon from "$lib/components/SvgIcon.svelte";
 	import Artists from "$lib/components/Artists.svelte";
@@ -124,19 +123,22 @@
 			const time = player.getCurrentTime();
 			trackLength = formatTime(duration);
 			trackTime = formatTime(time);
-			trackPosition = time / duration * 100;
+			trackPosition = time / duration * 1000;
 		}
 	}
 	setInterval(getTimes, 1000);
 
-	function onTrackClick(e) {
+
+	/**
+	 * Handle event when changing the track position slider
+	 */
+	function onTrackerChange() {
 		if (!isPlaying) {
 			playVideo();
 		} else {
-			const ratio = e.offsetX / this.offsetWidth;
+			const ratio = trackPosition / 1000;
 			const timestamp  = ratio * player.getDuration();
 			player.seekTo(timestamp, true);
-			trackPosition = ratio * 100;
 		}
 	}
 </script>
@@ -147,9 +149,7 @@
 >
 	<div class="flex flex-row items-center">
 		<div class="px-4 w-16 inline-block h-6">{trackTime}</div>
-		<div on:click={onTrackClick} class="flex-grow" on:keypress={() => {}}>
-			<Progressbar progress={trackPosition} size="h-1.5" />
-		</div>
+		<input type="range" class="flex-grow" min="0" max="1000" bind:value={trackPosition} on:change={onTrackerChange}>
 		<div class="px-4 w-16 inline-block h-6">{trackLength}</div>
 	</div>
 	<div class="flex flex-row justify-between items-center">
