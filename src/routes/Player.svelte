@@ -149,7 +149,7 @@
 >
 	<div class="flex flex-row items-center">
 		<div class="px-4 w-16 inline-block h-6">{trackTime}</div>
-		<input type="range" class="flex-grow" min="0" max="1000" bind:value={trackPosition} on:change={onTrackerChange}>
+		<input type="range" class="accent-teal-600 flex-grow" min="0" max="1000" bind:value={trackPosition} on:change={onTrackerChange}>
 		<div class="px-4 w-16 inline-block h-6">{trackLength}</div>
 	</div>
 	<div class="flex flex-row justify-between items-center">
