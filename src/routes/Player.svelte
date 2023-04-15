@@ -1,7 +1,7 @@
 <script>
 	import { Progressbar } from "flowbite-svelte";
 	import { queue, currentTrack } from "$lib/stores.js";
-	import SvgIcon from "$lib/SvgIcon.svelte";
+	import SvgIcon from "$lib/components/SvgIcon.svelte";
 
 	export let index = 0;
 

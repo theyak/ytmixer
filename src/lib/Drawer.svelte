@@ -3,7 +3,7 @@
 	import { sineIn } from 'svelte/easing';
 	import { hideDrawer, playlists, login, queue, progress, isLoggedIn } from '$lib/stores';
 	import { onMount } from 'svelte';
-	import SvgIcon from "./SvgIcon.svelte";
+	import SvgIcon from "./components/SvgIcon.svelte";
 	import * as YTM from '$lib/ytm.js';
 
 	onMount(async () => {

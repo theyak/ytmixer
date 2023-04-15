@@ -3,7 +3,7 @@
 	import "../app.css";
 	import AboutModal from "$lib/components/AboutModal.svelte";
 	import Drawer from "$lib/Drawer.svelte";
-	import SvgIcon from "$lib/SvgIcon.svelte";
+	import SvgIcon from "$lib/components/SvgIcon.svelte";
 	import Player from "./Player.svelte"
 	import { hideDrawer, queue } from "$lib/stores";
 

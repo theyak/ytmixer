@@ -6,10 +6,8 @@
 	import Tracks from '../Tracks.svelte';
 	import SaveModal from '$lib/components/SaveModal.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
-	// import Player from "$lib/components/Player.svelte";
 
 	let playlist = null;
-	let playlistmeta = null;
 
 	let saveModal = false;
 
@@ -32,6 +30,11 @@
 		}
 	});
 
+	/**
+	 * Load tracks from playlist
+	 *
+	 * @param {string} Playlist ID
+	 */
 	async function loadTracks(id) {
 		let requests = 1;
 
@@ -50,9 +53,6 @@
 		const trackCount = playlist.trackCount;
 		const maxRequests = Math.ceil(trackCount / 100);
 
-		playlistmeta = {...playlist};
-		playlistmeta.tracks = null;
-
 		while (continuation && requests < maxRequests) {
 			const next = await YTM.getTrackContinuations(id, continuation);
 			requests++;
@@ -60,8 +60,49 @@
 			playlist.tracks = [...playlist.tracks, ...next.tracks];
 			continuation = next.continuation;
 		}
+
+		const duration = playlist.tracks.reduce((prev, curr) => {
+			return prev + curr.durationSeconds;
+		}, 0);
+
+		playlist.duration = convertSecondsToFullTime(duration);
 	}
 
+	/**
+	 * Convert number of seconds to a playlist duration string similar
+	 * to what is showin in YouTube Music. For example, 3 hours, 20 minutes
+	 * or 45 minutes, 10 seconds.
+	 *
+	 * @param {number}
+	 * @return {string}
+	 */
+	function convertSecondsToFullTime(seconds) {
+
+		// Calculate hours, minutes, and seconds
+		seconds = Math.floor(seconds);
+		let hours = Math.floor(seconds / 3600);
+		let minutes = Math.floor((seconds % 3600) / 60);
+		seconds = seconds % 60;
+
+		const hoursLabel = hours === 1 ? "hour" : "hours";
+		const minutesLabel = minutes === 1 ? "minute" : "minutes";
+		const secondsLabel = seconds === 1 ? "second" : "seconds";
+
+		// Create the formatted time string
+		if (hours > 0) {
+			return `${hours} ${hoursLabel}, ${minutes} ${minutesLabel}`;
+		}
+
+		return `${minutes} ${minutesLabel}, ${seconds} ${secondsLabel}`;
+
+	}
+
+	/**
+	 * Shuffle an array
+	 *
+	 * @param {array}
+	 * @return {array}
+	 */
 	function shuffle(arr) {
 		let newArr = arr.slice();
 		for (let i = newArr.length - 1; i > 0; i--) {
@@ -71,16 +112,21 @@
 		return newArr;
 	}
 
+	/**
+	 * Randomly shuffle tracks. No magic algorithm needed.
+	 */
 	function shuffleTracks() {
 		for (let i = 0; i < 5; i++) {
 			playlist.tracks = shuffle(playlist.tracks);
 		}
 	}
 
-	function saveTracks() {
-		saveModal = true;
-	}
 
+	/**
+	 * Save playlist to YouTube Music
+	 *
+	 * @param {CustomEvent}
+	 */
 	async function createPlaylist(e) {
 		const name = e.detail.name;
 
@@ -128,7 +174,7 @@
 					<div>
 						<button class="px-4 py-1 mr-3 border-solid dark:border-gray-100 border-gray-900 border" on:click={shuffleTracks}>Shuffle</button>
 						{#if $isLoggedIn}
-							<button class="px-4 py-1 border-solid dark:border-gray-100 border-gray-900 border" on:click={saveTracks}>Save</button>
+							<button class="px-4 py-1 border-solid dark:border-gray-100 border-gray-900 border" on:click={() => {saveModal = true}}>Save</button>
 						{/if}
 					</div>
 				</div>
