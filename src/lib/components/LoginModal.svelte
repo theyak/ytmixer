@@ -17,11 +17,11 @@
 		const result = await YTM.getPlaylists();
 
 		if (Array.isArray(result)) {
+			$isLoggedIn = true;
 			$playlists = result;
 			$login = false;
 			authUser = "";
 			cookie = "";
-			$isLoggedIn = true;
 			dispatch('login');
 		} else {
 			$isLoggedIn = false;

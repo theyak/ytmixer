@@ -1,10 +1,11 @@
 <!-- src/routes/+layout.svelte -->
 <script>
-	import '../app.css';
-	import AboutModal from '$lib/components/AboutModal.svelte';
+	import "../app.css";
+	import AboutModal from "$lib/components/AboutModal.svelte";
 	import Drawer from "$lib/Drawer.svelte";
 	import SvgIcon from "$lib/SvgIcon.svelte";
-	import { hideDrawer } from "$lib/stores";
+	import Player from "./Player.svelte"
+	import { hideDrawer, queue } from "$lib/stores";
 
 	let aboutModal = false;
 </script>
@@ -34,3 +35,7 @@
 
 	<slot />
 </div>
+
+{#if $queue.length > 0}
+	<Player />
+{/if}

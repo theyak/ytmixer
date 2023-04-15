@@ -33,10 +33,9 @@
 
 <script>
 	import * as YTM from '$lib/ytm.js';
-	import { queue } from "$lib/stores.js";
+	import { queue, currentTrack } from "$lib/stores.js";
 
 	export let tracks = [];
-	export let currentTrack = {};
 
 	let sortType = '';
 	let sortAscending = false;
@@ -111,6 +110,8 @@
 				$queue.push(track);
 			}
 		}
+
+		$currentTrack = $queue[0];
 	};
 
 	async function dislike(videoId) {
@@ -142,12 +143,12 @@
 			</thead>
 			<tbody>
 				{#each tracks as track, idx}
-					<tr on:click={() => onSelect(track.videoId)} class:playing={currentTrack.videoId === track.videoId}>
+					<tr on:click={() => onSelect(track.videoId)} class:playing={$currentTrack?.videoId === track.videoId}>
 						<td>
 							<img style="object-fit:cover;width:40px;height:40px" src={track.thumbnails[0].url} alt="" />
 						</td>
 						<td class="w-6">
-							{#if currentTrack.videoId === track.videoId}
+							{#if $currentTrack?.videoId === track.videoId}
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="w-6 h-6 fill-gray-900 dark:fill-gray-100"><path d="M10.296 7.71 14.621 12l-4.325 4.29 1.408 1.42L17.461 12l-5.757-5.71z"></path><path d="M6.704 6.29 5.296 7.71 9.621 12l-4.325 4.29 1.408 1.42L12.461 12z"></path></svg>
 							{/if}
 						</td>

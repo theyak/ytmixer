@@ -1,8 +1,8 @@
 <script>
-	import { Progressbar } from 'flowbite-svelte';
-	export let queue = [];
+	import { Progressbar } from "flowbite-svelte";
+	import { queue, currentTrack } from "$lib/stores.js";
+	import SvgIcon from "$lib/SvgIcon.svelte";
 	export let index = 0;
-	export let onPlay = (track) => {}
 
 	let player = null;
 	let isPlaying = false;
@@ -10,6 +10,7 @@
 	let trackTime = '';
 	let trackLength = '';
 	let trackPosition = 0;
+
 
 
 	function formatTime(seconds) {
@@ -40,14 +41,17 @@
 		return timeString;
 	}
 
-	function playVideo() {
+	function playVideo(d) {
 		isPlaying = true;
-		onPlay(queue[index]);
+
+		if (!$currentTrack) {
+			return;
+		}
 
 		if (!player) {
 			player = new YT.Player('player', {
 				width: '288',
-				videoId: queue[index].videoId,
+				videoId: $currentTrack.videoId,
 				playerVars: {
 					playsinline: 1
 				},
@@ -57,7 +61,7 @@
 				}
 			});
 		} else {
-			player.loadVideoById(queue[index].videoId);
+			player.loadVideoById($currentTrack.videoId);
 		}
 	}
 
@@ -75,16 +79,18 @@
 	function previous() {
 		index--;
 		if (index < 0) {
-			index = queue.length - 1;
+			index = $queue.length - 1;
 		}
+		$currentTrack = $queue[index];
 		playVideo();
 	}
 
 	function next() {
 		index++;
-		if (index > queue.length) {
+		if (index >= $queue.length) {
 			index = 0;
 		}
+		$currentTrack = $queue[index];
 		playVideo();
 	}
 
@@ -125,7 +131,7 @@
 </script>
 
 <div
-	class="sticky bottom-0 h-16 min-h-16 border-t-gray-400 p-2"
+	class="fixed w-full bottom-0 h-17 min-h-17 border-t-gray-400 p-2 bg-slate-200 dark:bg-slate-800"
 	style="border-top-width: 1px; border-top-style: solid"
 >
 	<div class="flex flex-row items-center">
@@ -138,62 +144,37 @@
 	<div class="flex flex-row justify-between items-center">
 		<div id="player-controls">
 			<button id="play-prev" class="inline-block px-3" on:click={previous}>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					style="fill: rgba(244, 244, 244, 1);"><path d="m16 7-7 5 7 5zm-7 5V7H7v10h2z" /></svg
-				>
+				<SvgIcon><path d="m16 7-7 5 7 5zm-7 5V7H7v10h2z" /></SvgIcon>
 			</button>
 			{#if playerState < 1}
 				<button id="play-button" class="inline-block px-3" on:click={play}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						style="fill: rgba(244, 244, 244, 1);"><path d="M7 6v12l10-6z" /></svg
-					>
+					<SvgIcon><path d="M7 6v12l10-6z" /></SvgIcon>
 				</button>
 			{:else if playerState == 1}
 				<button id="pause-button" class="inline-block px-3" on:click={pause}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						style="fill: rgba(244, 244, 244, 1);"><path d="M8 7h3v10H8zm5 0h3v10h-3z" /></svg
-					>
+					<SvgIcon><path d="M8 7h3v10H8zm5 0h3v10h-3z" /></SvgIcon>
 				</button>
 			{:else}
 				<button id="resume-button" class="inline-block px-3" on:click={resume}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						style="fill: rgba(244, 244, 244, 1);"><path d="M7 6v12l10-6z" /></svg
-					>
+					<SvgIcon><path d="M7 6v12l10-6z" /></SvgIcon>
 				</button>
 			{/if}
 			<button id="play-next" class="inline-block px-3" on:click={next}>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					style="fill: rgba(244, 244, 244, 1);"><path d="M7 7v10l7-5zm9 10V7h-2v10z" /></svg
-				>
+				<SvgIcon><path d="M7 7v10l7-5zm9 10V7h-2v10z" /></SvgIcon>
 			</button>
 		</div>
-		{#if queue[index]?.title}
+		{#if $queue[index]?.title}
 			<div id="track-info" class="text-center">
-				{queue[index].title}
-				{#if queue[index].artists && queue[index].artists.length > 0}
-					&bull;
-					{queue[index].artists[0].name}
-				{/if}
+				<div class="flex flex-row items-center gap-2">
+					<img style="height:40px;width:40px" src={$queue[index].thumbnails[0].url} alt="Track Thumbnail" />
+					<div>
+						{$queue[index].title}
+						{#if $queue[index].artists && $queue[index].artists.length > 0}
+							&bull;
+							{$queue[index].artists[0].name}
+						{/if}
+					</div>
+				</div>
 			</div>
 		{/if}
 		<div id="player-options" />

@@ -30,3 +30,8 @@ export const playlists = writable([]);
  * Songs queued up for playing
  */
 export const queue = writable([]);
+
+/**
+ * Currently played track
+ */
+export const currentTrack = writable(null);
