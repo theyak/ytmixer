@@ -2,12 +2,7 @@ import {getAuth} from "$lib/ytm.server";
 // import * as util from "util";
 
 /** @type {import('./$types').RequestHandler} */
-export async function GET({request, params, setHeaders}) {
-
-	setHeaders({
-		"cache-control": "max-age=30",
-	});
-
+export async function GET({request, params}) {
 	const url = new URL(request.url);
 	const limit = url.searchParams.get("limit") || 0;
 	const continuation = url.searchParams.get("token") || null;

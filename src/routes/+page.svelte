@@ -16,7 +16,7 @@
 
 <LoginModal />
 
-<div class="overflow-y-auto scroller">
+<div class="overflow-y-auto scroller px-4">
 	<div style="margin: 16px auto">
 		{#if $playlists && $playlists.length > 0}
 			<div class="flex flex-row flex-wrap gap-8 justify-center">

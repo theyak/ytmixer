@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from "svelte";
 	import { queue, currentTrack } from "$lib/stores.js";
 	import SvgIcon from "$lib/components/SvgIcon.svelte";
 	import Artists from "$lib/components/Artists.svelte";
@@ -11,7 +12,10 @@
 	let trackTime = '';
 	let trackLength = '';
 	let trackPosition = 0;
+	let skipNextUpdate = false;
 	let videoId = null;
+
+	let queuePosition = "100vh";
 
 	// Weird issue here. When calling playVideo(), the
 	// player variable gets all messed up. So, start video
@@ -21,7 +25,16 @@
 		if (player) {
 			player.loadVideoById(videoId);
 		}
+
+		// Need to find place in queue so that next and previous buttons work.
+		for (let i = 0; i < $queue.length; i++) {
+			if ($queue[i].videoId === videoId) {
+				index = i;
+				break;
+			}
+		}
 	}
+
 
 	function formatTime(seconds) {
 		// Calculate hours, minutes, and seconds
@@ -51,6 +64,29 @@
 		return timeString;
 	}
 
+	function setVideo(id) {
+		for (let i = 0; i < $queue.length; i++) {
+			if ($queue[i].videoId === id) {
+				$currentTrack = $queue[i];
+				break;
+			}
+		}
+	}
+
+	function loadPlayer() {
+		player = new YT.Player('player', {
+			width: "40%",
+			videoId: $currentTrack.videoId,
+			playerVars: {
+				playsinline: 1
+			},
+			events: {
+				onReady: onPlayerReady,
+				onStateChange: onPlayerStateChange
+			}
+		});
+	}
+
 	function playVideo() {
 		isPlaying = true;
 
@@ -58,18 +94,15 @@
 			return;
 		}
 
+		videoId = $currentTrack.videoId;
+
+		const element = document.getElementById(`track-${videoId}`);
+		if (element) {
+			element.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+		}
+
 		if (!player) {
-			player = new YT.Player('player', {
-				width: '288',
-				videoId: $currentTrack.videoId,
-				playerVars: {
-					playsinline: 1
-				},
-				events: {
-					onReady: onPlayerReady,
-					onStateChange: onPlayerStateChange
-				}
-			});
+			loadPlayer();
 		} else {
 			player.loadVideoById($currentTrack.videoId);
 		}
@@ -117,7 +150,16 @@
 		player.playVideo();
 	}
 
+	/**
+	 * Get the current timestamp of track
+	 */
 	function getTimes() {
+		// Prevent a flicker
+		if (skipNextUpdate) {
+			skipNextUpdate = false;
+			return;
+		}
+
 		if (player && playerState === 1) {
 			const duration = player.getDuration();
 			const time = player.getCurrentTime();
@@ -139,9 +181,38 @@
 			const ratio = trackPosition / 1000;
 			const timestamp  = ratio * player.getDuration();
 			player.seekTo(timestamp, true);
+			skipNextUpdate = true;
 		}
 	}
+
+	function toggleQueue() {
+		console.log("toggleQueue");
+		queuePosition = queuePosition === "100vh" ? "48px" : "100vh";
+	}
 </script>
+
+<style>
+	#queue {
+		top: var(--position);
+		transition: top 0.5s ease 0s;
+		height: calc(100vh - 128px);
+	}
+
+	#queue .playing {
+		background-color: rgba(255, 255, 255, .1);
+	}
+
+	#queue .track {
+		border-bottom-style: solid;
+		border-bottom-width: 1px;
+	}
+
+	#queue #list {
+		height: calc(100vh - 128px);
+		max-height: calc(100vh - 128px);
+		overflow-y: auto;
+	}
+</style>
 
 <div
 	class="fixed w-full bottom-0 h-17 min-h-17 border-t-gray-400 px-2 py-1 bg-slate-200 dark:bg-slate-800"
@@ -188,7 +259,79 @@
 			</div>
 		{/if}
 
-		<div id="player-options" style="width: 144px" />
+		<div id="player-options" style="width: 144px">
+			<button on:click={toggleQueue}>Toggle Queue</button>
+		</div>
 	</div>
 </div>
-<div id="player" class="hidden" />
+<div id="queue" class="fixed h-full w-full bg-black" style="--position: {queuePosition}">
+	<div class="flex flex-row gap-4 h-full max-h-full">
+		<div id="player" style="width: 50%" class="self-center"/>
+		<div id="list" style="width: 50%" class="self-start px-2 scroller">
+			{#each $queue as track}
+				<div
+					id="track-{track.videoId}"
+					class="track p-2 flex flex-row gap-4 border-b-slate-200 dark:border-b-slate-800 items-center cursor-pointer"
+					class:playing={videoId === track.videoId}
+					on:click={() => setVideo(track.videoId)}
+					on:keypress={() => {}}
+				>
+					<img style="width:60px; height:60px" src={track.thumbnails[0].url} alt="thumbnail" />
+					<div class="flex flex-row justify-between w-full">
+						<div>
+							<div class="title strong">{track.title}</div>
+							<div>
+								<Artists artists={track.artists} />
+							</div>
+						</div>
+						<div>
+							{track.duration}
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+</div>
+
+
+<!--
+[
+  {
+    "videoId": "ZbLc7ynsNuU",
+    "title": "Out of Tartarus",
+    "artists": [
+      {
+        "id": "UCxcelUjL7OrIaR6_UnZv9TQ",
+        "name": "Darren Korb"
+      }
+    ],
+    "album": {
+      "id": "MPREb_sfzdCLEKV37",
+      "name": "Hades: Original Soundtrack"
+    },
+    "likeStatus": "INDIFFERENT",
+    "thumbnails": [
+      {
+        "url": "https://lh3.googleusercontent.com/Bmi8gGULQRIrIq4ksmTRLGeMX0FjvZJ0Fd4nPPH0XhF9GD0Qm-hy7ktA9kizs8Et1knFlRnj4Jd36jsS=w60-h60-l90-rj",
+        "width": 60,
+        "height": 60
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/Bmi8gGULQRIrIq4ksmTRLGeMX0FjvZJ0Fd4nPPH0XhF9GD0Qm-hy7ktA9kizs8Et1knFlRnj4Jd36jsS=w120-h120-l90-rj",
+        "width": 120,
+        "height": 120
+      }
+    ],
+    "isAvailable": true,
+    "isLicensed": true,
+    "isExplicit": false,
+    "videoType": "MUSIC_VIDEO_TYPE_ATV",
+    "duration": "5:54",
+    "durationSeconds": 354,
+    "feedbackTokens": {},
+    "setVideoId": false
+  }
+]
+
+-->
