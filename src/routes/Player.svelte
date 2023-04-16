@@ -20,7 +20,7 @@
 	// Weird issue here. When calling playVideo(), the
 	// player variable gets all messed up. So, start video
 	// directly instead of calliing playVideo()
-	$: if (videoId !== $currentTrack.videoId) {
+	$: if ($currentTrack && videoId !== $currentTrack.videoId) {
 		videoId = $currentTrack.videoId;
 		if (player) {
 			player.loadVideoById(videoId);
@@ -34,7 +34,6 @@
 			}
 		}
 	}
-
 
 	function formatTime(seconds) {
 		// Calculate hours, minutes, and seconds
@@ -73,10 +72,10 @@
 		}
 	}
 
-	function loadPlayer() {
+	onMount(() => {
 		player = new YT.Player('player', {
 			width: "40%",
-			videoId: $currentTrack.videoId,
+			// videoId: $currentTrack.videoId,
 			playerVars: {
 				playsinline: 1
 			},
@@ -85,7 +84,8 @@
 				onStateChange: onPlayerStateChange
 			}
 		});
-	}
+		console.log("mount", player);
+	});
 
 	function playVideo() {
 		isPlaying = true;
@@ -102,7 +102,7 @@
 		}
 
 		if (!player) {
-			loadPlayer();
+			setTimeout(playVideo, 500);
 		} else {
 			player.loadVideoById($currentTrack.videoId);
 		}

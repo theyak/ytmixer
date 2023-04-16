@@ -36,6 +36,6 @@
 	<slot />
 </div>
 
-{#if $queue.length > 0}
+<div class:hidden={$queue.length <= 0}>
 	<Player />
-{/if}
+</div>
