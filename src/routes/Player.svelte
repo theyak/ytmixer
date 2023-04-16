@@ -84,7 +84,6 @@
 				onStateChange: onPlayerStateChange
 			}
 		});
-		console.log("mount", player);
 	});
 
 	function playVideo() {
@@ -186,7 +185,6 @@
 	}
 
 	function toggleQueue() {
-		console.log("toggleQueue");
 		queuePosition = queuePosition === "100vh" ? "48px" : "100vh";
 	}
 </script>
@@ -215,7 +213,7 @@
 </style>
 
 <div
-	class="fixed w-full bottom-0 h-17 min-h-17 border-t-gray-400 px-2 py-1 bg-slate-200 dark:bg-slate-800"
+	class="fixed w-full bottom-0 h-17 min-h-17 border-t-gray-400 px-2 py-1 bg-slate-200 dark:bg-slate-800 z-10"
 	style="border-top-width: 1px; border-top-style: solid"
 >
 	<div class="flex flex-row items-center">
@@ -293,45 +291,3 @@
 		</div>
 	</div>
 </div>
-
-
-<!--
-[
-  {
-    "videoId": "ZbLc7ynsNuU",
-    "title": "Out of Tartarus",
-    "artists": [
-      {
-        "id": "UCxcelUjL7OrIaR6_UnZv9TQ",
-        "name": "Darren Korb"
-      }
-    ],
-    "album": {
-      "id": "MPREb_sfzdCLEKV37",
-      "name": "Hades: Original Soundtrack"
-    },
-    "likeStatus": "INDIFFERENT",
-    "thumbnails": [
-      {
-        "url": "https://lh3.googleusercontent.com/Bmi8gGULQRIrIq4ksmTRLGeMX0FjvZJ0Fd4nPPH0XhF9GD0Qm-hy7ktA9kizs8Et1knFlRnj4Jd36jsS=w60-h60-l90-rj",
-        "width": 60,
-        "height": 60
-      },
-      {
-        "url": "https://lh3.googleusercontent.com/Bmi8gGULQRIrIq4ksmTRLGeMX0FjvZJ0Fd4nPPH0XhF9GD0Qm-hy7ktA9kizs8Et1knFlRnj4Jd36jsS=w120-h120-l90-rj",
-        "width": 120,
-        "height": 120
-      }
-    ],
-    "isAvailable": true,
-    "isLicensed": true,
-    "isExplicit": false,
-    "videoType": "MUSIC_VIDEO_TYPE_ATV",
-    "duration": "5:54",
-    "durationSeconds": 354,
-    "feedbackTokens": {},
-    "setVideoId": false
-  }
-]
-
--->
