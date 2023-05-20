@@ -3,6 +3,7 @@
 	import { queue, currentTrack } from "$lib/stores.js";
 	import SvgIcon from "$lib/components/SvgIcon.svelte";
 	import Artists from "$lib/components/Artists.svelte";
+	import * as YTM from '$lib/ytm.js';
 
 	export let index = 0;
 
@@ -187,6 +188,11 @@
 	function toggleQueue() {
 		queuePosition = queuePosition === "100vh" ? "48px" : "100vh";
 	}
+
+	async function songInfo() {
+		const data = await YTM.getSong($currentTrack.videoId);
+		console.log(data);
+	}
 </script>
 
 <style>
@@ -259,6 +265,7 @@
 
 		<div id="player-options" style="width: 144px">
 			<button on:click={toggleQueue}>Toggle Queue</button>
+			<button on:click={songInfo}>Song Info (Console)</button>
 		</div>
 	</div>
 </div>

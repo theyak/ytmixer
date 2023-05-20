@@ -157,3 +157,19 @@ export async function getYtmClientInfo() {
 		return err;
 	}
 }
+
+/**
+ * Get track information
+ *
+ * @param {string} videoId
+ * @returns Object
+ */
+export async function getSong(videoId) {
+	try {
+		const response = await fetch(`/api/track?videoId=${videoId}`, getOptions());
+		const data = await response.json();
+		return data;
+	} catch (err) {
+		return [];
+	}
+}
