@@ -38,7 +38,7 @@
 		"flowbite": "^1.6.4",
 		"flowbite-svelte": "^0.34.2",
 		"https": "^1.0.0",
-		"sha1": "^1.1.1",
-		"ytmclient": "github:theyak/ytmclient"
+		"ytmclient": "github:theyak/ytmclient",
+		"sha1": "^1.1.1"
 	}
 }
