@@ -71,7 +71,7 @@
 		</div>
 		{#each $playlists as list}
 			<div class="h-8 flex ml-8">
-				<a on:click={() => $hideDrawer = true} href={`/${list.playlistId}`}>{list.title}</a>
+				<a href={`/${list.playlistId}`}>{list.title}</a>
 			</div>
 		{/each}
 	{/if}

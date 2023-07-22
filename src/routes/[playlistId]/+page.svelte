@@ -7,26 +7,17 @@
 	import SaveModal from '$lib/components/SaveModal.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
 
+	let canContinue = true;
+
 	let playlist = null;
 
 	let saveModal = false;
-	let loading = "";
 
-	// Detect change in URL and load playlist
-	$: if (!playlist || $page.params.playlistId !== playlist.id) {
-		if (playlist && ("VL" + $page.params.playlistId) === playlist.id) {
-			// do nothing
-		} else {
-			try {
-				if (localStorage && YTM.hasYoutubeMusicCookie()) {
-					loadTracks($page.params.playlistId);
-				}
-			} catch (err) {
-				console.log("error");
-				$login = true;
-			}
-		}
-	}
+	$: $page.params.playlistId, (() => {
+		canContinue = false;
+		playlist = null;
+		loadTracks($page.params.playlistId);
+	})()
 
 	onMount(async () => {
 		if (!YTM.hasYoutubeMusicCookie()) {
@@ -41,12 +32,6 @@
 	 * @param {string} Playlist ID
 	 */
 	async function loadTracks(id) {
-		if (loading) {
-			return;
-		}
-
-		loading = true;
-
 		let requests = 1;
 
 		playlist = await YTM.getTracks(id, 100);
@@ -57,21 +42,25 @@
 				tracks: [],
 			};
 
-			loading = false;
 			return;
 		}
 
 		let continuation = playlist.continuation;
+		if (continuation) {
+			canContinue = true;
+		}
 
 		const trackCount = playlist.trackCount;
 		const maxRequests = Math.ceil(trackCount / 100);
 
-		while (continuation && requests < maxRequests) {
+		while (playlist && canContinue && continuation && requests < maxRequests) {
 			const next = await YTM.getTrackContinuations(id, continuation);
-			requests++;
-			$progress = (requests / maxRequests) * 100;
-			playlist.tracks = [...playlist.tracks, ...next.tracks];
-			continuation = next.continuation;
+			if (playlist && canContinue) {
+				requests++;
+				$progress = (requests / maxRequests) * 100;
+				playlist.tracks = [...playlist.tracks, ...next.tracks];
+				continuation = next.continuation;
+			}
 		}
 
 		const duration = playlist.tracks.reduce((prev, curr) => {
@@ -79,8 +68,6 @@
 		}, 0);
 
 		playlist.duration = convertSecondsToFullTime(duration);
-
-		loading = false;
 	}
 
 	/**
@@ -146,14 +133,19 @@
 		const name = e.detail.name;
 
 		if (name) {
-			const playlistId = await YTM.createPlaylist(name);
-			const ids = playlist.tracks.map((track) => track.videoId);
+			const response = await YTM.createPlaylist(name);
+			if (response.success) {
+				const playlistId = response.playlistId;
+				const ids = playlist.tracks.map((track) => track.videoId);
 
-			// There is a maximum of 200 tracks that can be saved at a time
-			const chunkSize = 200;
-			for (let i = 0; i < ids.length; i += chunkSize) {
-				const chunk = ids.slice(i, i + chunkSize);
-				await YTM.addTracksToPlaylist(playlistId, chunk);
+				// There is a maximum of 200 tracks that can be saved at a time
+				const chunkSize = 200;
+				for (let i = 0; i < ids.length; i += chunkSize) {
+					const chunk = ids.slice(i, i + chunkSize);
+					await YTM.addTracksToPlaylist(playlistId, chunk);
+				}
+			} else {
+				alert(response.error);
 			}
 		}
 	}
