@@ -16,7 +16,7 @@
 	$: if (!playlist || $page.params.playlistId !== playlist.id) {
 		try {
 			if (localStorage && YTM.hasYoutubeMusicCookie()) {
-				console.log("loading");
+				console.log("loading", playlist, $page.params.playlistId, playlist.id);
 				loadTracks($page.params.playlistId);
 			}
 		} catch (err) {
@@ -44,7 +44,6 @@
 
 		loading = true;
 
-		console.log("Load tracks from ", id);
 		let requests = 1;
 
 		playlist = await YTM.getTracks(id, 100);
@@ -54,6 +53,8 @@
 				id: $page.params.playlistId,
 				tracks: [],
 			};
+
+			loading = false;
 			return;
 		}
 
@@ -75,6 +76,8 @@
 		}, 0);
 
 		playlist.duration = convertSecondsToFullTime(duration);
+
+		loading = false;
 	}
 
 	/**
