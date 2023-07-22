@@ -10,11 +10,13 @@
 	let playlist = null;
 
 	let saveModal = false;
+	let loading = false;
 
 	// Detect change in URL and load playlist
 	$: if (!playlist || $page.params.playlistId !== playlist.id) {
 		try {
 			if (localStorage && YTM.hasYoutubeMusicCookie()) {
+				console.log("loading");
 				loadTracks($page.params.playlistId);
 			}
 		} catch (err) {
@@ -36,6 +38,12 @@
 	 * @param {string} Playlist ID
 	 */
 	async function loadTracks(id) {
+		if (loading) {
+			return;
+		}
+
+		loading = true;
+
 		console.log("Load tracks from ", id);
 		let requests = 1;
 
@@ -53,17 +61,12 @@
 
 		const trackCount = playlist.trackCount;
 		const maxRequests = Math.ceil(trackCount / 100);
-		console.log("trackCount", trackCount);
-		console.log("maxRequests", maxRequests);
 
 		while (continuation && requests < maxRequests) {
-			console.log(continuation);
 			const next = await YTM.getTrackContinuations(id, continuation);
 			requests++;
 			$progress = (requests / maxRequests) * 100;
-			console.log(playlist.tracks.length, next.tracks.length);
 			playlist.tracks = [...playlist.tracks, ...next.tracks];
-			console.log(playlist.tracks.length);
 			continuation = next.continuation;
 		}
 
@@ -150,7 +153,7 @@
 	}
 </script>
 
-<LoginModal on:login={loadTracks($page.params.playlistId)} />
+<LoginModal on:login={() => loadTracks($page.params.playlistId)} />
 <SaveModal open={saveModal} on:close={saveModal = false} on:save={createPlaylist}/>
 
 <div class="overflow-y-auto scroller">
