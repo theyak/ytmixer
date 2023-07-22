@@ -14,7 +14,9 @@
 
 	// Detect change in URL and load playlist
 	$: if (!playlist || $page.params.playlistId !== playlist.id) {
-		if ("VL" + $page.params.playlistId !== playlist.id) {
+		if (playlist && ("VL" + $page.params.playlistId) === playlist.id) {
+			// do nothing
+		} else {
 			try {
 				if (localStorage && YTM.hasYoutubeMusicCookie()) {
 					loadTracks($page.params.playlistId);
