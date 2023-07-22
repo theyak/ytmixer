@@ -10,18 +10,19 @@
 	let playlist = null;
 
 	let saveModal = false;
-	let loading = false;
+	let loading = "";
 
 	// Detect change in URL and load playlist
 	$: if (!playlist || $page.params.playlistId !== playlist.id) {
-		try {
-			if (localStorage && YTM.hasYoutubeMusicCookie()) {
-				console.log("loading", playlist, $page.params.playlistId, playlist.id);
-				loadTracks($page.params.playlistId);
+		if ("VL" + $page.params.playlistId !== playlist.id) {
+			try {
+				if (localStorage && YTM.hasYoutubeMusicCookie()) {
+					loadTracks($page.params.playlistId);
+				}
+			} catch (err) {
+				console.log("error");
+				$login = true;
 			}
-		} catch (err) {
-			console.log("error");
-			$login = true;
 		}
 	}
 
