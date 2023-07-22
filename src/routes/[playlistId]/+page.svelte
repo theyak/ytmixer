@@ -36,6 +36,7 @@
 	 * @param {string} Playlist ID
 	 */
 	async function loadTracks(id) {
+		console.log("Load tracks from ", id);
 		let requests = 1;
 
 		playlist = await YTM.getTracks(id, 100);
@@ -52,12 +53,17 @@
 
 		const trackCount = playlist.trackCount;
 		const maxRequests = Math.ceil(trackCount / 100);
+		console.log("trackCount", trackCount);
+		console.log("maxRequests", maxRequests);
 
 		while (continuation && requests < maxRequests) {
+			console.log(continuation);
 			const next = await YTM.getTrackContinuations(id, continuation);
 			requests++;
 			$progress = (requests / maxRequests) * 100;
+			console.log(playlist.tracks.length, next.tracks.length);
 			playlist.tracks = [...playlist.tracks, ...next.tracks];
+			console.log(playlist.tracks.length);
 			continuation = next.continuation;
 		}
 
