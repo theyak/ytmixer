@@ -31,7 +31,13 @@
 	 *
 	 * @param {string} Playlist ID
 	 */
-	async function loadTracks(id) {
+	async function loadTracks(id, refresh = false) {
+
+		if (!refresh && sessionStorage.getItem(`playlist-${id}`)) {
+			playlist = JSON.parse(sessionStorage.getItem(`playlist-${id}`));
+			return;
+		}
+
 		let requests = 1;
 
 		playlist = await YTM.getTracks(id, 100);
@@ -68,6 +74,8 @@
 		}, 0);
 
 		playlist.duration = convertSecondsToFullTime(duration);
+
+		sessionStorage.setItem(`playlist-${id}`, JSON.stringify(playlist));
 	}
 
 	/**
@@ -181,8 +189,9 @@
 					<div>
 						<button class="px-4 py-1 mr-3 border-solid dark:border-gray-100 border-gray-900 border" on:click={shuffleTracks}>Shuffle</button>
 						{#if $isLoggedIn}
-							<button class="px-4 py-1 border-solid dark:border-gray-100 border-gray-900 border" on:click={() => {saveModal = true}}>Save</button>
+							<button class="px-4 py-1 mr-3 border-solid dark:border-gray-100 border-gray-900 border" on:click={() => {saveModal = true}}>Save</button>
 						{/if}
+						<button class="px-4 py-1 border-solid dark:border-gray-100 border-gray-900 border" on:click={() => loadTracks(playlist.id, true)}>Refresh</button>
 					</div>
 				</div>
 				<Tracks tracks={playlist.tracks} />
