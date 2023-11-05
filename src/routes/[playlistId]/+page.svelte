@@ -144,7 +144,23 @@
 			const response = await YTM.createPlaylist(name);
 			if (response.success) {
 				const playlistId = response.playlistId;
-				const ids = playlist.tracks.map((track) => track.videoId);
+
+				// Get IDs of tracks, removing any duplicates which will
+				// cause an error when trying to add tracks. Duplicates
+				// generally come from automatically generated playlists
+				// such as Liked Music.
+				const idSet = new Set();
+				for (let i in playlist.tracks) {
+					const id = playlist.tracks[i].videoId;
+					if (idSet.has(id)) {
+						const title = playlist.tracks[i].title;
+						console.log(`Playlist has duplicate track ${id} - ${title}. Skipping.`);
+					} else {
+						idSet.add(id);
+					}
+				}
+
+				const ids = Array.from(idSet);
 
 				// There is a maximum of 200 tracks that can be saved at a time
 				const chunkSize = 200;
